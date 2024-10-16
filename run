@@ -68,7 +68,7 @@ sleep 3
 ipsaya=$(wget -qO- ipinfo.io/ip)
 data_server=$(curl -v --insecure --silent https://google.com/ 2>&1 | grep Date | sed -e 's/< Date: //')
 date_list=$(date +"%Y-%m-%d" -d "$data_server")
-data_ip="https://raw.githubusercontent.com/gapesta/daftar/master/Ip"
+data_ip="https://raw.githubusercontent.com/gapesta/daftar/main/Ip"
 #data_ip="https://abc.xcodehoster.com/izin"
 checking_sc() {
   useexp=$(wget -qO- $data_ip | grep $ipsaya | awk '{print $3}')
@@ -150,10 +150,10 @@ clear
 #########################
 # USERNAME
 rm -f /usr/bin/user
-username=$(curl https://raw.githubusercontent.com/gapesta/daftar/master/Ip | grep $MYIP | awk '{print $2}')
+username=$(curl https://raw.githubusercontent.com/gapesta/daftar/main/Ip | grep $MYIP | awk '{print $2}')
 #username=$(curl https://abc.xcodehoster.com/izin | grep $MYIP | awk '{print $2}')
 echo "$username" >/usr/bin/user
-expx=$(curl https://raw.githubusercontent.com/gapesta/daftar/master/Ip | grep $MYIP | awk '{print $3}')
+expx=$(curl https://raw.githubusercontent.com/gapesta/daftar/main/Ip | grep $MYIP | awk '{print $3}')
 #$expx=$(curl https://abc.xcodehoster.com/izin | grep $MYIP | awk '{print $3}')
 echo "$expx" >/usr/bin/e
 # DETAIL ORDER
@@ -178,7 +178,7 @@ mai="datediff "$Exp" "$DATE""
 Info="(${green}Active${NC})"
 Error="(${RED}ExpiRED${NC})"
 today=`date -d "0 days" +"%Y-%m-%d"`
-Exp1=$(curl https://raw.githubusercontent.com/gapesta/daftar/master/Ip | grep $MYIP | awk '{print $4}')
+Exp1=$(curl https://raw.githubusercontent.com/gapesta/daftar/main/Ip | grep $MYIP | awk '{print $4}')
 #Exp1=$(curl https://abc.xcodehoster.com/izin | grep $MYIP | awk '{print $4}')
 if [[ $today < $Exp1 ]]; then
 sts="${Info}"
@@ -188,7 +188,7 @@ fi
 echo -e "\e[32mloading...\e[0m"
 clear
 # REPO    
-    REPO="https://raw.githubusercontent.com/gapesta/scp/master/"
+    REPO="https://raw.githubusercontent.com/gapesta/scp/main/"
     #REPOKU="https://myridtunnel.my.id/"
 
 ####
@@ -375,11 +375,11 @@ echo ""
 elif [[ $host == "2" ]]; then
 echo ""
 #install cf
-wget https://raw.githubusercontent.com/gapesta/scp/master/cf.sh && chmod +x cf.sh && ./cf.sh
+wget https://raw.githubusercontent.com/gapesta/scp/main/cf.sh && chmod +x cf.sh && ./cf.sh
 clear
 else
 print_install "Random Subdomain/Domain is Used"
-wget https://raw.githubusercontent.com/gapesta/scp/master/cf.sh && chmod +x cf.sh && ./cf.sh
+wget https://raw.githubusercontent.com/gapesta/scp/main/cf.sh && chmod +x cf.sh && ./cf.sh
 clear
     fi
 }
@@ -465,7 +465,7 @@ clear
     
     # / / Ambil Xray Core Version Terbaru
 latest_version="$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
-bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/master/install-release.sh)" @ install -u www-data --version $latest_version
+bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version $latest_version
  
     # // Ambil Config Server
     wget -O /etc/xray/config.json "${REPO}xray/config.json" >/dev/null 2>&1
@@ -916,7 +916,7 @@ print_success "All Packet"
 function menu(){
     clear
     print_install "Memasang Menu Packet"
-    wget https://raw.githubusercontent.com/gapesta/scp/master/menu/menu.zip
+    wget https://raw.githubusercontent.com/gapesta/scp/main/menu/menu.zip
     unzip menu.zip
     chmod +x menu/*
     mv menu/* /usr/local/sbin
@@ -1057,8 +1057,8 @@ domain=$(cat /etc/xray/domain)
 }
 function finish(){
 TIME="10"
-NAMES=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/master/Ip | grep $MYIP | awk '{print $3}')
-EXPSC=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/master/Ip | grep $MYIP | awk '{print $4}')
+NAMES=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/main/Ip | grep $MYIP | awk '{print $3}')
+EXPSC=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/main/Ip | grep $MYIP | awk '{print $4}')
 CHATID="-1001911780985"
 LOCAL_DATE="/usr/bin/"
 MYIP=$(wget -qO- ipinfo.io/ip)
