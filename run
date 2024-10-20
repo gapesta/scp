@@ -190,9 +190,9 @@ echo -e "\e[32mloading...\e[0m"
 clear
 # REPO    
     #repo untuk pengguna github via upluad
-    #REPO="https://raw.githubusercontent.com/gapesta/scp/main/"
+    REPO="https://raw.githubusercontent.com/gapesta/scp/main/"
     #repo untuk pengguna git
-    REPO="https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/"
+    #REPO="https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/"
     #REPOKU="https://myridtunnel.my.id/"
 
 ####
@@ -379,11 +379,11 @@ echo ""
 elif [[ $host == "2" ]]; then
 echo ""
 #install cf
-wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh && chmod +x cf.sh && ./cf.sh
+wget https://raw.githubusercontent.com/gapesta/scp/main/cf.sh && chmod +x cf.sh && ./cf.sh
 clear
 else
 print_install "Random Subdomain/Domain is Used"
-wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh && chmod +x cf.sh && ./cf.sh
+wget https://raw.githubusercontent.com/gapesta/scp/main/cf.sh && chmod +x cf.sh && ./cf.sh
 clear
     fi
 }
@@ -920,7 +920,7 @@ print_success "All Packet"
 function menu(){
     clear
     print_install "Memasang Menu Packet"
-    wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/menu/menu.zip
+    wget https://raw.githubusercontent.com/gapesta/scp/main/menu/menu.zip
     unzip menu.zip
     chmod +x menu/*
     mv menu/* /usr/local/sbin
