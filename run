@@ -151,10 +151,10 @@ clear
 #########################
 # USERNAME
 rm -f /usr/bin/user
-username=$(curl https://raw.githubusercontent.com/gapesta/daftar/main/Ip | grep $MYIP | awk '{print $2}')
+username=$(curl https://raw.githubusercontent.com/gapesta/daftar/refs/heads/main/Ip | grep $MYIP | awk '{print $2}')
 #username=$(curl https://abc.xcodehoster.com/izin | grep $MYIP | awk '{print $2}')
 echo "$username" >/usr/bin/user
-expx=$(curl https://raw.githubusercontent.com/gapesta/daftar/main/Ip | grep $MYIP | awk '{print $3}')
+expx=$(curl https://raw.githubusercontent.com/gapesta/daftar/refs/heads/main/Ip | grep $MYIP | awk '{print $3}')
 #$expx=$(curl https://abc.xcodehoster.com/izin | grep $MYIP | awk '{print $3}')
 echo "$expx" >/usr/bin/e
 # DETAIL ORDER
@@ -179,7 +179,7 @@ mai="datediff "$Exp" "$DATE""
 Info="(${green}Active${NC})"
 Error="(${RED}ExpiRED${NC})"
 today=`date -d "0 days" +"%Y-%m-%d"`
-Exp1=$(curl https://raw.githubusercontent.com/gapesta/daftar/main/Ip | grep $MYIP | awk '{print $4}')
+Exp1=$(curl https://raw.githubusercontent.com/gapesta/daftar/refs/heads/main/Ip | grep $MYIP | awk '{print $4}')
 #Exp1=$(curl https://abc.xcodehoster.com/izin | grep $MYIP | awk '{print $4}')
 if [[ $today < $Exp1 ]]; then
 sts="${Info}"
@@ -189,7 +189,10 @@ fi
 echo -e "\e[32mloading...\e[0m"
 clear
 # REPO    
-    REPO="https://raw.githubusercontent.com/gapesta/scp/main/"
+    #repo untuk pengguna github via upluad
+    #REPO="https://raw.githubusercontent.com/gapesta/scp/main/"
+    #repo untuk pengguna git
+    REPO="https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/"
     #REPOKU="https://myridtunnel.my.id/"
 
 ####
@@ -376,11 +379,11 @@ echo ""
 elif [[ $host == "2" ]]; then
 echo ""
 #install cf
-wget https://raw.githubusercontent.com/gapesta/scp/main/cf.sh && chmod +x cf.sh && ./cf.sh
+wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh && chmod +x cf.sh && ./cf.sh
 clear
 else
 print_install "Random Subdomain/Domain is Used"
-wget https://raw.githubusercontent.com/gapesta/scp/main/cf.sh && chmod +x cf.sh && ./cf.sh
+wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh && chmod +x cf.sh && ./cf.sh
 clear
     fi
 }
@@ -654,24 +657,24 @@ systemctl daemon-reload
 systemctl restart qmtr
 systemctl enable qmtr
 # // Installing UDP Mini
-mkdir -p /usr/sbin/badvpn/udp-mini
-wget -q -O /usr/sbin/badvpn/udp-mini "${REPO}badvpn/udp-mini"
-chmod +x /usr/sbin/badvpn/udp-mini
-wget -q -O /etc/systemd/system/udp-mini-1.service "${REPO}badvpn/udp-mini-1.service"
-wget -q -O /etc/systemd/system/udp-mini-2.service "${REPO}badvpn/udp-mini-2.service"
-wget -q -O /etc/systemd/system/udp-mini-3.service "${REPO}badvpn/udp-mini-3.service"
-systemctl disable udp-mini-1
-systemctl stop udp-mini-1
-systemctl enable udp-mini-1
-systemctl start udp-mini-1
-systemctl disable udp-mini-2
-systemctl stop udp-mini-2
-systemctl enable udp-mini-2
-systemctl start udp-mini-2
-systemctl disable udp-mini-3
-systemctl stop udp-mini-3
-systemctl enable udp-mini-3
-systemctl start udp-mini-3
+mkdir -p /usr/sbin/badvpn/
+wget -q -O /usr/sbin/badvpn/badvpn "${REPO}badvpn/badvpn"
+chmod +x /usr/sbin/badvpn/badvpn
+wget -q -O /etc/systemd/system/badvpn1.service "${REPO}badvpn/badvpn1.service"
+wget -q -O /etc/systemd/system/badvpn2.service "${REPO}badvpn/badvpn2.service"
+wget -q -O /etc/systemd/system/badvpn3.service "${REPO}badvpn/badvpn3.service"
+systemctl disable badvpn1
+systemctl stop badvpn1
+systemctl enable badvpn1
+systemctl start badvpn1
+systemctl disable badvpn2
+systemctl stop badvpn2
+systemctl enable badvpn2
+systemctl start badvpn2
+systemctl disable badvpn3
+systemctl stop badvpn3
+systemctl enable badvpn3
+systemctl start badvpn3
 print_success "Limit Quota Service"
 }
 
@@ -917,7 +920,7 @@ print_success "All Packet"
 function menu(){
     clear
     print_install "Memasang Menu Packet"
-    wget https://raw.githubusercontent.com/gapesta/scp/main/menu/menu.zip
+    wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/menu/menu.zip
     unzip menu.zip
     chmod +x menu/*
     mv menu/* /usr/local/sbin
@@ -1058,8 +1061,8 @@ domain=$(cat /etc/xray/domain)
 }
 function finish(){
 TIME="10"
-NAMES=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/main/Ip | grep $MYIP | awk '{print $3}')
-EXPSC=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/main/Ip | grep $MYIP | awk '{print $4}')
+NAMES=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/refs/heads/main/Ip | grep $MYIP | awk '{print $3}')
+EXPSC=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/refs/heads/main/Ip | grep $MYIP | awk '{print $4}')
 CHATID="-1001911780985"
 LOCAL_DATE="/usr/bin/"
 MYIP=$(wget -qO- ipinfo.io/ip)
