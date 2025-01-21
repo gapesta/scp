@@ -489,7 +489,7 @@ bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release
     wget -O /etc/nginx/conf.d/xray.conf "${REPO}xray/xray.conf" >/dev/null 2>&1
     sed -i "s/xxx/${domain}/g" /etc/haproxy/haproxy.cfg
     sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf
-    curl https://abc.xcodehoster.com/ssh/nginx.conf > /etc/nginx/nginx.conf
+    curl curl ${REPO}/ssh/nginx.conf > /etc/nginx/nginx.conf
     
 cat /etc/xray/xray.crt /etc/xray/xray.key | tee /etc/haproxy/hap.pem
 
@@ -657,24 +657,43 @@ systemctl daemon-reload
 systemctl restart qmtr
 systemctl enable qmtr
 # // Installing UDP Mini
-mkdir -p /usr/sbin/badvpn/
-wget -q -O /usr/sbin/badvpn/badvpn "${REPO}badvpn/badvpn"
-chmod +x /usr/sbin/badvpn/badvpn
-wget -q -O /etc/systemd/system/badvpn1.service "${REPO}badvpn/badvpn1.service"
-wget -q -O /etc/systemd/system/badvpn2.service "${REPO}badvpn/badvpn2.service"
-wget -q -O /etc/systemd/system/badvpn3.service "${REPO}badvpn/badvpn3.service"
-systemctl disable badvpn1
-systemctl stop badvpn1
-systemctl enable badvpn1
-systemctl start badvpn1
-systemctl disable badvpn2
-systemctl stop badvpn2
-systemctl enable badvpn2
-systemctl start badvpn2
-systemctl disable badvpn3
-systemctl stop badvpn3
-systemctl enable badvpn3
-systemctl start badvpn3
+mkdir -p /usr/local/Premium/
+wget -q -O /usr/local/Premium/udp-mini "${REPO}badvpn/udp-mini"
+chmod +x /usr/local/Premium/udp-mini
+wget -q -O /etc/systemd/system/udp-mini-1.service "${REPO}badvpn/udp-mini-1.service"
+wget -q -O /etc/systemd/system/udp-mini-2.service "${REPO}badvpn/udp-mini-2.service"
+wget -q -O /etc/systemd/system/udp-mini-3.service "${REPO}badvpn/udp-mini-3.service"
+systemctl disable udp-mini-1
+systemctl stop udp-mini-1
+systemctl enable udp-mini-1
+systemctl start udp-mini-1
+systemctl disable udp-mini-2
+systemctl stop udp-mini-2
+systemctl enable udp-mini-2
+systemctl start udp-mini-2
+systemctl disable udp-mini-3
+systemctl stop udp-mini-3
+systemctl enable udp-mini-3
+systemctl start udp-mini-3
+#print_success "UDP MINI"
+#mkdir -p /usr/sbin/badvpn/
+#wget -q -O /usr/sbin/badvpn/badvpn "${REPO}badvpn/badvpn"
+#chmod +x /usr/sbin/badvpn/badvpn
+#wget -q -O /etc/systemd/system/badvpn1.service "${REPO}badvpn/badvpn1.service"
+#wget -q -O /etc/systemd/system/badvpn2.service "${REPO}badvpn/badvpn2.service"
+#wget -q -O /etc/systemd/system/badvpn3.service "${REPO}badvpn/badvpn3.service"
+#systemctl disable badvpn1
+#systemctl stop badvpn1
+#systemctl enable badvpn1
+#systemctl start badvpn1
+#systemctl disable badvpn2
+#systemctl stop badvpn2
+#systemctl enable badvpn2
+#systemctl start badvpn2
+#systemctl disable badvpn3
+#systemctl stop badvpn3
+#systemctl enable badvpn3
+#systemctl start badvpn3
 print_success "Limit Quota Service"
 }
 
