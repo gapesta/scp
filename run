@@ -84,7 +84,7 @@ checking_sc() {
     echo -e "   \033[0;33mYour VPS${NC} $ipsaya \033[0;33mHas been Banned${NC}"
     echo -e "     \033[0;33mBuy access permissions for scripts${NC}"
     echo -e "             \033[0;33mContact Admin :${NC}"
-    echo -e "      \033[0;36mTelegram${NC} t.me/gapesta04"
+    echo -e "      \033[0;36mTelegram${NC} t.me/jaringan_vpn"
     echo -e "      ${GREEN}WhatsApp${NC} wa.me/6287875166131"
     echo -e "\033[1;93m────────────────────────────────────────────\033[0m"
     exit
@@ -657,12 +657,14 @@ systemctl daemon-reload
 systemctl restart qmtr
 systemctl enable qmtr
 # // Installing UDP Mini
-mkdir -p /usr/local/Premium/
-wget -q -O /usr/local/Premium/udp-mini "${REPO}badvpn/udp-mini"
-chmod +x /usr/local/Premium/udp-mini
+mkdir -p /usr/local/kyt/udp-mini
+wget -q -O /usr/local/kyt/udp-mini "${REPO}badvpn/udp-mini"
+chmod +x /usr/local/kyt/udp-mini
 wget -q -O /etc/systemd/system/udp-mini-1.service "${REPO}badvpn/udp-mini-1.service"
 wget -q -O /etc/systemd/system/udp-mini-2.service "${REPO}badvpn/udp-mini-2.service"
 wget -q -O /etc/systemd/system/udp-mini-3.service "${REPO}badvpn/udp-mini-3.service"
+systemctl daemon-reload
+sleep 1
 systemctl disable udp-mini-1
 systemctl stop udp-mini-1
 systemctl enable udp-mini-1
@@ -844,12 +846,12 @@ apt -y install fail2ban > /dev/null 2>&1
 /etc/init.d/fail2ban status
 
 # Instal DDOS Flate
-if [ -d '/usr/local/ddos' ]; then
-	echo; echo; echo "Please un-install the previous version first"
-	exit 0
-else
-	mkdir /usr/local/ddos
-fi
+#if [ -d '/usr/local/ddos' ]; then
+#	echo; echo; echo "Please un-install the previous version first"
+#	exit 0
+#else
+#	mkdir /usr/local/ddos
+#fi
 
 clear
 # banner
@@ -1144,15 +1146,16 @@ echo "    Arch       : $Arch" | tee -a log-install.txt
 echo "    Ram Total   : $Ram_Total MB" | tee -a log-install.txt
 echo "    Ram Used   : $Ram_Usage MB" | tee -a log-install.txt
 echo "    ============================" | tee -a log-install.txt
-echo "  ⚠︎𝘽𝙮 DEVILS TUNNEL 𝙋𝙧𝙤𝙟𝙚𝙘𝙩 𝙈𝙖𝙣𝙖𝙜𝙚𝙧 𝘾𝙤𝙢𝙢𝙪𝙣𝙞𝙩𝙮⚠︎" | tee -a log-install.txt
+echo "  ⚠︎𝘽𝙮 GPS TUNNEL 𝙋𝙧𝙤𝙟𝙚𝙘𝙩 𝙈𝙖𝙣𝙖𝙜𝙚𝙧 𝘾𝙤𝙢𝙢𝙪𝙣𝙞𝙩𝙮⚠︎" | tee -a log-install.txt
 echo "    ============================" | tee -a log-install.txt
 echo ""
 echo "SIMPAN DATA VPS DI ATAS" | tee -a log-install.txt
 sudo hostnamectl set-hostname $username
 echo -e "${green} Script Successfull Installed"
-echo ""
-read -n 1 -s -r -p "Press ➥ Enter To Install Udp Custom"
-wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1S3IE25v_fyUfCLslnujFBSBMNunDHDk2' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1S3IE25v_fyUfCLslnujFBSBMNunDHDk2" -O install-udp && rm -rf /tmp/cookies.txt && chmod +x install-udp && ./install-udp
-echo ""
-sleep 10
+#echo ""
+#read -n 1 -s -r -p "Press ➥ Enter To Install Udp Custom"
+#wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1S3IE25v_fyUfCLslnujFBSBMNunDHDk2' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1S3IE25v_fyUfCLslnujFBSBMNunDHDk2" -O install-udp && rm -rf /tmp/cookies.txt && chmod +x install-udp && ./install-udp
+#echo ""
+#sleep 10
+sleep 3
 reboot
