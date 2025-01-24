@@ -190,9 +190,9 @@ echo -e "\e[32mloading...\e[0m"
 clear
 # REPO    
     #repo untuk pengguna github via upluad
-    REPO="https://raw.githubusercontent.com/gapesta/scp/main/"
+    #REPO="https://raw.githubusercontent.com/gapesta/scp/main/"
     #repo untuk pengguna git
-    #REPO="https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/"
+    REPO="https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/"
     #REPOKU="https://myridtunnel.my.id/"
 
 ####
@@ -379,11 +379,11 @@ echo ""
 elif [[ $host == "2" ]]; then
 echo ""
 #install cf
-wget https://raw.githubusercontent.com/gapesta/scp/main/cf.sh && chmod +x cf.sh && ./cf.sh
+wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh && chmod +x cf.sh && ./cf.sh
 clear
 else
 print_install "Random Subdomain/Domain is Used"
-wget https://raw.githubusercontent.com/gapesta/scp/main/cf.sh && chmod +x cf.sh && ./cf.sh
+wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh && chmod +x cf.sh && ./cf.sh
 clear
     fi
 }
@@ -657,9 +657,9 @@ systemctl daemon-reload
 systemctl restart qmtr
 systemctl enable qmtr
 # // Installing UDP Mini
-mkdir -p /usr/local/kyt/udp-mini
-wget -q -O /usr/local/kyt/udp-mini "${REPO}badvpn/udp-mini"
-chmod +x /usr/local/kyt/udp-mini
+mkdir -p /usr/local/bin/udp-mini
+wget -q -O /usr/local/bin/udp-mini "${REPO}badvpn/udp-mini"
+chmod +x /usr/local/bin/udp-mini
 wget -q -O /etc/systemd/system/udp-mini-1.service "${REPO}badvpn/udp-mini-1.service"
 wget -q -O /etc/systemd/system/udp-mini-2.service "${REPO}badvpn/udp-mini-2.service"
 wget -q -O /etc/systemd/system/udp-mini-3.service "${REPO}badvpn/udp-mini-3.service"
