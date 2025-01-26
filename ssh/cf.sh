@@ -1,7 +1,7 @@
 #!/bin/bash
 # Edition : Stable Edition V3.0
-# Auther  : MyridWan Project
-# (C) Copyright 2023
+# Auther  : Gapesta Project
+# (C) Copyright 2025
 # =========================================
 #!/bin/bash
 Green="\e[92;1m"
@@ -36,8 +36,8 @@ LIGHT='\033[0;37m'
 grenbo="\e[92;1m"
 red() { echo -e "\\033[32;1m${*}\\033[0m"; }
 # Getting
-CHATID=""
-KEY=""
+CHATID="5867172791"
+KEY="1421129669:AAHnO59rW7YPdIMgaf9H0lFueZpA2Hk76OA"
 export TIME="10"
 export URL="https://api.telegram.org/bot$KEY/sendMessage"
 clear
@@ -49,13 +49,19 @@ ns_domain_cloudflare1() {
 apt install jq curl -y
 clear
 
-read -rp "Sub Domain (Contoh: Rzy): " sub
-DOMAIN=cloudrzs.my.id
+read -rp "Sub Domain (Contoh: vpn): " sub
+#DOMAIN=cloudrzs.my.id
+#echo $sub > /root/cfku
+#SUB_DOMAIN=${sub}.cloudrzs.my.id
+#CF_ID=prarizki9@gmail.com
+#CF_KEY=8c5d17794ccaee71d0e79e09dae8fb23f3e92
+#echo ".cloudrzs.my.id" > /root/domain
+DOMAIN=gapesta.my.id
 echo $sub > /root/cfku
-SUB_DOMAIN=${sub}.cloudrzs.my.id
-CF_ID=prarizki9@gmail.com
-CF_KEY=8c5d17794ccaee71d0e79e09dae8fb23f3e92
-echo ".cloudrzs.my.id" > /root/domain
+SUB_DOMAIN=${sub}.gapesta.my.id
+CF_ID=anakgapesta@gmail.com
+CF_KEY=eec7f4d8af7234122a11ec6c50cf3edc18e20
+echo ".gapesta.my.id" > /root/domain
 echo $SUB_DOMAIN > /root/domain
 
 set -euo pipefail
@@ -93,8 +99,8 @@ rm -f /root/f1.sh
 function notif_addhost() {
     green "Notif AddHost Tele"
     sleep 2
-    CHATID="6050202923"
-    KEY="6006599143:AAEgstCAioq35JgX97HaW_G3TAkLKzLZS_w"
+    CHATID="5867172791"
+    KEY="1421129669:AAHnO59rW7YPdIMgaf9H0lFueZpA2Hk76OA"
     TIME="10"
 TEXT="
 <code>â”â”â”â”â”â”â”â”â”â”â”â”â”â”</code>

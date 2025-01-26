@@ -39,7 +39,7 @@ function LOGO() {
  ───│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───
  ───│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───
  ───│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───
-    │    ${YELLOW}Copyright${FONT} (C)$GRAY https://t.me/gapesta04$NC   │
+    │    ${YELLOW}Copyright${FONT} (C)$GRAY https://t.me/jaringan_vpn$NC   │
     └───────────────────────────────────────────────┘
          ${RED}Autoscript xray vpn lite (multi port)${FONT}    
 ${RED}Make sure the internet is smooth when installing the script${FONT}
@@ -57,10 +57,10 @@ clear;clear;clear
 
   # // Banner
 echo -e "${RED}◇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◇${NC}"
-echo -e "  Welcome To gapesta Store Script Manager ${BLUE}(${NC}${BLUE} New Edition ${NC}${BLUE})${NC}"
+echo -e "  Welcome To Lan Store Script Manager ${BLUE}(${NC}${BLUE} New Edition ${NC}${BLUE})${NC}"
 echo -e "     This Will Quick Setup VPN Server On Your Server"
-echo -e "         Auther : ${BLUE}gapesta ${NC}${BLUE}(${NC} ${BLUE} gapesta Store ${NC}${BLUE})${NC}"
-echo -e "       © Recode By gapesta Store ${BLUE}(${NC} 2023 ${BLUE})${NC}"
+echo -e "         Auther : ${BLUE}gapesta ${NC}${BLUE}(${NC} ${BLUE} Lan Store ${NC}${BLUE})${NC}"
+echo -e "       © Recode By Gapesta ${BLUE}(${NC} 2023 ${BLUE})${NC}"
 echo -e "${RED}◇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◇${NC}"
 echo ""
 sleep 3
@@ -206,9 +206,15 @@ function print_ok() {
     echo -e "${OK} ${BLUE} $1 ${FONT}"
 }
 function print_install() {
+#	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+#	echo -e "${green} ┌──────• MEMASANG •───────┐ ${FONT}"
+#    echo -e "${YELLOW} │ 🌿 $1 ${FONT}"
+#    echo -e "${green} └─────────────────────────┘ ${FONT}"
+#	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+#    sleep 2
 	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
 	echo -e "${green} ┌──────• MEMASANG •───────┐ ${FONT}"
-    echo -e "${YELLOW} │ 🌿 $1 ${FONT}"
+    echo -e "${YELLOW} │ 🛠️ $1 🪛${FONT}"
     echo -e "${green} └─────────────────────────┘ ${FONT}"
 	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
     sleep 2
@@ -219,10 +225,18 @@ function print_error() {
 }
 
 function print_success() {
+#    if [[ 0 -eq $? ]]; then
+#		echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+#        echo -e "${green} ┌──────• BERHASILL •───────┐ ${FONT}"
+#        echo -e "${YELLOW} │ 🌿 $1 ${FONT}"
+#        echo -e "${green} └──────────────────────────┘ ${FONT}"
+#		echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+#        sleep 2
+#    fi
     if [[ 0 -eq $? ]]; then
 		echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
         echo -e "${green} ┌──────• BERHASILL •───────┐ ${FONT}"
-        echo -e "${YELLOW} │ 🌿 $1 ${FONT}"
+        echo -e "${YELLOW} │ ✅ $1 🆗${FONT}"
         echo -e "${green} └──────────────────────────┘ ${FONT}"
 		echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
         sleep 2
@@ -489,7 +503,7 @@ bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release
     wget -O /etc/nginx/conf.d/xray.conf "${REPO}xray/xray.conf" >/dev/null 2>&1
     sed -i "s/xxx/${domain}/g" /etc/haproxy/haproxy.cfg
     sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf
-    curl curl ${REPO}/ssh/nginx.conf > /etc/nginx/nginx.conf
+    curl ${REPO}/ssh/nginx.conf > /etc/nginx/nginx.conf
     
 cat /etc/xray/xray.crt /etc/xray/xray.key | tee /etc/haproxy/hap.pem
 
@@ -657,7 +671,7 @@ systemctl daemon-reload
 systemctl restart qmtr
 systemctl enable qmtr
 # // Installing UDP Mini
-mkdir -p /usr/local/bin/udp-mini
+mkdir -p /usr/local/bin
 wget -q -O /usr/local/bin/udp-mini "${REPO}badvpn/udp-mini"
 chmod +x /usr/local/bin/udp-mini
 wget -q -O /etc/systemd/system/udp-mini-1.service "${REPO}badvpn/udp-mini-1.service"
