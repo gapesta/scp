@@ -17,6 +17,7 @@ REDBG="\033[41;37m"
 OK="${Green}--->${FONT}"
 ERROR="${RED}[ERROR]${FONT}"
 GRAY="\e[1;30m"
+HJU="\033[32m " #hijau gelap 
 NC='\e[0m'
 red='\e[1;31m'
 green='\e[0;32m'
@@ -39,7 +40,7 @@ function LOGO() {
  ───│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───
  ───│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───
  ───│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───
-    │    ${YELLOW}Copyright${FONT} (C)$GRAY https://t.me/jaringan_vpn$NC   │
+    │    ${YELLOW}Copyright${FONT} (C)$HJU https://t.me/jaringan_vpn$NC   │
     └───────────────────────────────────────────────┘
          ${RED}Autoscript xray vpn lite (multi port)${FONT}    
 ${RED}Make sure the internet is smooth when installing the script${FONT}
@@ -371,7 +372,7 @@ echo -e " ───│                                               │──�
 echo -e " ───│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───"
 echo -e " ───│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───"
 echo -e " ───│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───"
-echo -e "    │    ${YELLOW}Copyright${FONT} (C)$GRAY https://t.me/gapesta04$NC   │"
+echo -e "    │    ${YELLOW}Copyright${FONT} (C)$HJU https://t.me/jaringan_vpn$NC   │"
 echo -e "    └───────────────────────────────────────────────┘"
 echo -e "         ${RED}Autoscript xray vpn lite (multi port)${FONT}"    
 echo -e "${RED}Make sure the internet is smooth when installing the script${FONT}"
@@ -680,6 +681,8 @@ chmod +x /usr/local/bin/udp-mini
 wget -q -O /etc/systemd/system/udp-mini-1.service "${REPO}badvpn/udp-mini-1.service"
 wget -q -O /etc/systemd/system/udp-mini-2.service "${REPO}badvpn/udp-mini-2.service"
 wget -q -O /etc/systemd/system/udp-mini-3.service "${REPO}badvpn/udp-mini-3.service"
+wget -q -O /etc/systemd/system/udp-mini-4.service "${REPO}badvpn/udp-mini-4.service"
+wget -q -O /etc/systemd/system/udp-mini-5.service "${REPO}badvpn/udp-mini-5.service"
 systemctl daemon-reload
 sleep 1
 systemctl disable udp-mini-1
@@ -694,6 +697,14 @@ systemctl disable udp-mini-3
 systemctl stop udp-mini-3
 systemctl enable udp-mini-3
 systemctl start udp-mini-3
+systemctl disable udp-mini-4
+systemctl stop udp-mini-4
+systemctl enable udp-mini-4
+systemctl start udp-mini-4
+systemctl disable udp-mini-5
+systemctl stop udp-mini-5
+systemctl enable udp-mini-5
+systemctl start udp-mini-5
 #print_success "UDP MINI"
 #mkdir -p /usr/sbin/badvpn/
 #wget -q -O /usr/sbin/badvpn/badvpn "${REPO}badvpn/badvpn"
@@ -810,9 +821,9 @@ account default
 host smtp.gmail.com
 port 587
 auth on
-user devilstunnel@gmail.com
-from devilstunnel@gmail.com
-password 31102021 
+user panjireondy@gmail.com
+from panjireody@gmail.com
+password xahl djhi smch zlvc
 logfile ~/.msmtp.log
 EOF
 chown -R www-data:www-data /etc/msmtprc
@@ -863,12 +874,12 @@ apt -y install fail2ban > /dev/null 2>&1
 /etc/init.d/fail2ban status
 
 # Instal DDOS Flate
-#if [ -d '/usr/local/ddos' ]; then
-#	echo; echo; echo "Please un-install the previous version first"
-#	exit 0
-#else
-#	mkdir /usr/local/ddos
-#fi
+if [ -d '/usr/local/ddos' ]; then
+	echo; echo; echo "Please un-install the previous version first"
+	exit 0
+else
+	mkdir /usr/local/ddos
+fi
 
 clear
 # banner
