@@ -335,11 +335,11 @@ function speedtest() {
     if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
         print_install "Memasang Speedtest"
         curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash
-        apt install speedtest -y
+        apt-get install speedtest -y
     elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
         print_install "Memasang Speedtest"
         curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash
-        apt install -y speedtest
+        apt -y install speedtest
         print_success "Speedtest berhasil diinstal."
     else
         echo -e "${red}Sistem operasi tidak didukung. Skrip ini hanya untuk Ubuntu/Debian."
