@@ -329,6 +329,24 @@ function nginx_install() {
     fi
 }
 
+function speedtest() {
+    # // install speedtest
+    clear
+    if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
+        print_install "Memasang Speedtest"
+        curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash
+        apt install speedtest -y
+    elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
+        print_install "Memasang Speedtest"
+        curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash
+        apt install -y speedtest
+        print_success "Speedtest berhasil diinstal."
+    else
+        echo -e "${red}Sistem operasi tidak didukung. Skrip ini hanya untuk Ubuntu/Debian."
+         #exit 1
+    fi 
+}
+
 # Update and remove packages
 function base_package() {
     clear
@@ -395,7 +413,7 @@ elif [[ $host == "2" ]]; then
 echo ""
 #install cf
 #dec cf
-wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh && chmod +x cf.sh && /.cf.sh
+wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh && chmod +x cf.sh && ./cf.sh
 clear
 else
 print_install "Random Subdomain/Domain is Used"
@@ -1075,6 +1093,7 @@ function instal(){
 clear
     first_setup
     nginx_install
+    speedtest
     base_package
     password_default
     make_folder_xray
