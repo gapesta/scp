@@ -413,13 +413,23 @@ elif [[ $host == "2" ]]; then
 echo ""
 #install cf
 #dec cf
-wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh && chmod +x cf.sh && ./cf.sh
+wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh.enc
+files="cf.sh.enc"
+if [[ ! -f "$files" ]]; then
+    echo -e "${RED}File tidak ditemukan!"
+    #exit 1
+fi
+passworddec="123456"
+echo
+openssl enc -d -aes-256-cbc -in "$files" -out "${files%.enc}" -pass pass:"$passworddec"
+echo -e "${green}File berhasil didekripsi: ${files%.enc}"
+&& chmod +x cf.sh && ./cf.sh
 clear
 else
 print_install "Random Subdomain/Domain is Used"
 wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh && chmod +x cf.sh && ./cf.sh
 clear
-    fi
+fi
 }
 
 clear
