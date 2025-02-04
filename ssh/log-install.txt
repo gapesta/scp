@@ -1,6 +1,7 @@
     ┌─────────────────────────────────────────────────────┐
     │       >>> Service & Port                            │
     │   - Open SSH                : 443, 80, 22           │
+    │   - Noobzvpn                : 443, 80,              │
     │   - Dropbear                : 443, 109, 143         │
     │   - Dropbear Websocket      : 443, 109              │
     │   - SSH Websocket SSL       : 443                   │
@@ -22,6 +23,7 @@
     │   - Trojan WS               : 443                   │
     │   - Shadowsocks WS          : 443                   │
     │   - Shadowsocks gRPC        : 443                   │
+    │   - Badvpn                  : 7100,7 200, 7300, 7400│
     │                                                     │
     │      >>> Server Information & Other Features        │
     │   - Timezone                : Asia/Jakarta (GMT +7) │
@@ -30,6 +32,7 @@
     │   - Fully automatic script                          │
     │   - VPS settings                                    │
     │   - Admin Control                                   │
+    │   - Backup Data                                     │
     │   - Restore Data                                    │
     │   - Full Orders For Various Services                │
     └─────────────────────────────────────────────────────┘
