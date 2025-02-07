@@ -23,7 +23,7 @@
     │   - Trojan WS               : 443                   │
     │   - Shadowsocks WS          : 443                   │
     │   - Shadowsocks gRPC        : 443                   │
-    │   - Badvpn                  : 7100,7 200, 7300, 7400│
+    │   - Badvpn                  : 7100, 7200, 7300, 7400│
     │                                                     │
     │      >>> Server Information & Other Features        │
     │   - Timezone                : Asia/Jakarta (GMT +7) │
