@@ -221,6 +221,21 @@ function print_install() {
     sleep 2
 }
 
+function pesan() {
+#	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+#	echo -e "${green} ┌──────• MEMASANG •───────┐ ${FONT}"
+#    echo -e "${YELLOW} │ 🌿 $1 ${FONT}"
+#    echo -e "${green} └─────────────────────────┘ ${FONT}"
+#	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+#    sleep 2
+	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+	echo -e "${green} ┌────────•PROESES...•─────────┐ ${FONT}"
+    echo -e "${YELLOW} │ 🛠️  $1 🪛${FONT}"
+    echo -e "${green} └─────────────────────────────┘ ${FONT}"
+	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+    sleep 2
+}
+
 function print_error() {
     echo -e "${ERROR} ${REDBG} $1 ${FONT}"
 }
@@ -570,24 +585,25 @@ print_success "Konfigurasi Packet"
 
 install_noobzvpn() {
     clear
-    print_install "Memasang Noobvpn"
+    print_install "Noobz vpn"
     wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/noobzvpns.zip
     unzip noobzvpns.zip
     cd noobzvpns
     bash install.sh
     rm noobzvpns.zip
+    touch /etc/noobzvpns/.noobzvpns.db
     systemctl restart noobzvpns
     systemctl disable noobzvpns
     systemctl stopnoobzvpns
     systemctl start noobzvpns
     systemctl enable noobzvpns
-    print_success "Noobzvpn"
+    print_success "Noobz vpn"
 }
 
 #memasag l2tp dan pptp
 function l2tp_pptp(){
 clear
-print_install "Memasang L2tp Dan Pptp"
+print_install "L2TP DAN PPTP"
 
 VPN_IPSEC_PSK='jaringanvpn'
 NET_IFACE=$(ip -o $NET_IFACE -4 route show to default | awk '{print $5}');
@@ -596,13 +612,13 @@ source /etc/os-release
 OS=$ID
 ver=$VERSION_ID
 
-print_install "Memasang VPN... Harap bersabar."
+pesan "Memasang VPN... Harap bersabar."
 
 # Create and change to working dir
 mkdir -p /opt/src
 cd /opt/src
 
-print_install "Mencari IP server ini secara otomatis..."
+pesan "Mencari IP server ini secara otomatis..."
 PUBLIC_IP=$(wget -qO- ipinfo.io/ip);
 
 SWAN_VER=3.32
@@ -646,7 +662,7 @@ if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
   exiterr "Libreswan $SWAN_VER failed to build."
 fi
 
-print_install "Membuat konfigurasi VPN..."
+pesan "Membuat konfigurasi VPN..."
 
 L2TP_NET=192.168.42.0/24
 L2TP_LOCAL=192.168.42.1
@@ -794,7 +810,7 @@ novjccomp
 nologfd
 END
 
-print_install "Updating IPTables rules..."
+pesan "Updating IPTables rules..."
 service fail2ban stop >/dev/null 2>&1
 iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o $NET_IFACE -j MASQUERADE
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o $NET_IFACE -j MASQUERADE
@@ -809,7 +825,7 @@ netfilter-persistent save
 netfilter-persistent reload
 fi
 
-print_install "Enabling services on boot..."
+pesan "Enabling services on boot..."
 systemctl enable xl2tpd
 systemctl enable ipsec
 systemctl enable pptpd
@@ -828,7 +844,8 @@ service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null
 touch /var/lib/data-user-pptp
-print_success "L2tp Dan Pptp"
+touch /var/lib/data-user-l2tp
+print_success "L2TP DAN PPTP"
 }
 
 
