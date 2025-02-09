@@ -6,6 +6,7 @@ akuu="\033[33m"  #yello
 clear
 
 ###
+merahh="\033[91m"
 Green="\e[92;1m"
 RED="\033[31m"
 YELLOW="\033[33m"
@@ -213,11 +214,11 @@ function print_install() {
 #    echo -e "${green} └─────────────────────────┘ ${FONT}"
 #	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
 #    sleep 2
-	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
 	echo -e "${green} ┌────────• MEMASANG •─────────┐ ${FONT}"
-    echo -e "${YELLOW} │ 🛠️  $1 🪛${FONT}"
+    echo -e "${green} │ 🛠️  $1 🪛${FONT}"
     echo -e "${green} └─────────────────────────────┘ ${FONT}"
-	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
     sleep 2
 }
 
@@ -228,16 +229,21 @@ function pesan() {
 #    echo -e "${green} └─────────────────────────┘ ${FONT}"
 #	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
 #    sleep 2
-	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
-	echo -e "${green} ┌────────•PROESES...•─────────┐ ${FONT}"
-    echo -e "${YELLOW} │ 🛠️  $1 🪛${FONT}"
+	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+	echo -e "${green} ┌────────• PROESES..•─────────┐ ${FONT}"
+    echo -e "${green} │ 🛠️  $1 🪛${FONT}"
     echo -e "${green} └─────────────────────────────┘ ${FONT}"
-	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+	echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
     sleep 2
 }
 
 function print_error() {
-    echo -e "${ERROR} ${REDBG} $1 ${FONT}"
+    echo -e "${merahh} ◇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+	echo -e "${merahh} ┌──────────• ERROR..•─────────┐ ${FONT}"
+    echo -e "${merahh} │ 🚫  $1 ❌${FONT}"
+    echo -e "${merahh} └─────────────────────────────┘ ${FONT}"
+	echo -e "${merahh} ◇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+    #echo -e "${ERROR} ${REDBG} $1 ${FONT}"
 }
 
 function print_success() {
@@ -250,11 +256,11 @@ function print_success() {
 #        sleep 2
 #    fi
     if [[ 0 -eq $? ]]; then
-		echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+		echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
         echo -e "${green} ┌──────• BERHASILL •───────┐ ${FONT}"
-        echo -e "${YELLOW} │ ✅ $1 🆗${FONT}"
+        echo -e "${green} │ ✅ $1 🆗${FONT}"
         echo -e "${green} └──────────────────────────┘ ${FONT}"
-		echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
+		echo -e "${green} ◇━━━━━━━━━━━━━━━━━━━━━━━━━━◇ ${FONT}"
         sleep 2
     fi
 }
@@ -621,16 +627,21 @@ cd /opt/src
 pesan "Mencari IP server ini secara otomatis..."
 PUBLIC_IP=$(wget -qO- ipinfo.io/ip);
 
-SWAN_VER=3.32
-swan_file="libreswan-$SWAN_VER.tar.gz"
-swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
-swan_url2="https://download.libreswan.org/$swan_file"
-if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
-  exit 1
-fi
-/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-tar xzf "$swan_file" && /bin/rm -f "$swan_file"
-cd "libreswan-$SWAN_VER" || exit 1
+#SWAN_VER=3.32
+#swan_file="libreswan-$SWAN_VER.tar.gz"
+#swan_url1="https://github.com/libreswan/libreswan/archive/v$SWAN_VER.tar.gz"
+#swan_url2="https://download.libreswan.org/$swan_file"
+#if ! { wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url1" || wget -t 3 -T 30 -nv -O "$swan_file" "$swan_url2"; }; then
+#  exit 1
+#fi
+#/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
+#tar xzf "$swan_file" && /bin/rm -f "$swan_file"
+#cd "libreswan-$SWAN_VER" || exit 1
+
+#apt-get install strongswan
+#apt-get remove --purge libreswan
+apt-get install -y libreswan
+
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS = -w
 USE_DNSSEC = false
