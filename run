@@ -354,14 +354,14 @@ function speedtest() {
     # // install speedtest
     clear
     if [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "ubuntu" ]]; then
-        print_install "Memasang Speedtest"
+        print_install "Speedtest"
         curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash
         apt-get install speedtest -y
     elif [[ $(cat /etc/os-release | grep -w ID | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/ID//g') == "debian" ]]; then
-        print_install "Memasang Speedtest"
+        print_install "Speedtest"
         curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash
         apt -y install speedtest
-        print_success "Speedtest berhasil diinstal."
+        print_success "Speedtest"
     else
         echo -e "${red}Sistem operasi tidak didukung. Skrip ini hanya untuk Ubuntu/Debian."
          #exit 1
@@ -457,7 +457,7 @@ clear
 # Pasang SSL
 function pasang_ssl() {
 clear
-print_install "Memasang SSL Pada Domain"
+print_install "SSL Pada Domain"
     rm -rf /etc/xray/xray.key
     rm -rf /etc/xray/xray.crt
     domain=$(cat /root/domain)
@@ -549,7 +549,7 @@ bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release
     clear
     curl -s ipinfo.io/city >>/etc/xray/city
     curl -s ipinfo.io/org | cut -d " " -f 2-10 >>/etc/xray/isp
-    print_install "Memasang Konfigurasi Packet"
+    print_install "Konfigurasi Packet"
     #wget -O /etc/haproxy/haproxy.cfg "${REPO}xray/haproxy.cfg" >/dev/null 2>&1
     #wget -O /etc/nginx/conf.d/xray.conf "${REPO}xray/xray.conf" >/dev/null 2>&1
     wget -O /etc/haproxy/haproxy.cfg "${REPO}xray/haproxy.cfg" >/dev/null 2>&1
@@ -667,11 +667,11 @@ NPROCS=$(grep -c ^processor /proc/cpuinfo)
 [ -z "$NPROCS" ] && NPROCS=1
 make "-j$((NPROCS+1))" -s base && make -s install-base
 
-cd /opt/src || exit 1
-/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
-if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
-  exiterr "Libreswan $SWAN_VER failed to build."
-fi
+#cd /opt/src || exit 1
+#/bin/rm -rf "/opt/src/libreswan-$SWAN_VER"
+#if ! /usr/local/sbin/ipsec --version 2>/dev/null | grep -qF "$SWAN_VER"; then
+#  exiterr "Libreswan $SWAN_VER failed to build."
+#fi
 
 pesan "Membuat konfigurasi VPN..."
 
@@ -856,13 +856,108 @@ service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null
 touch /var/lib/data-user-pptp
 touch /var/lib/data-user-l2tp
+cat >/var/www/html/l2tp-linux.txt <<-END
+============================
+Ubuntu Linux
+Pengguna Ubuntu 18.04 (dan yang lebih baru) dapat menginstal paket network-manager-l2tp-gnome menggunakan apt, lalu mengonfigurasi klien VPN IPsec/L2TP menggunakan GUI.
+============================
+1.  Buka Pengaturan -> Jaringan -> VPN. Klik tombol + .
+2.  Pilih Layer 2 Tunneling Protocol (L2TP) .
+3.  Masukkan apa pun yang Anda suka pada kolom Nama .
+4.  Masuk Your VPN Server IPuntuk Gateway .
+5.  Masukkan Your VPN UsernameNama Pengguna .
+6.  Klik kanan ? di bidang Kata Sandi , pilih Simpan kata sandi hanya untuk pengguna ini .
+7.  Masukkan Your VPN Passworduntuk Kata Sandi .
+8.  Biarkan kolom Domain NT kosong.
+9.  Klik tombol Pengaturan IPsec...
+10. Centang kotak Aktifkan terowongan IPsec ke host L2TP .
+11. Biarkan kolom ID Gateway kosong.
+12. Masukkan Your VPN IPsec PSKkunci pra-berbagi .
+13. Luaskan bagian Lanjutan .
+14. Masuk aes128-sha1-modp2048untuk Algoritma Fase 1 .
+15. Masuk aes128-sha1untuk Algoritma Fase2 .
+16. Klik OK , lalu klik Tambah untuk menyimpan informasi koneksi VPN.
+17. Hidupkan tombol VPN .
+============================
+Script By @jaringan_vpn
+END
+cat >/var/www/html/l2tp-android.txt <<-END
+============================
+Android
+============================
+1.  Luncurkan aplikasi Pengaturan .
+2.  Ketuk "Jaringan & internet". Atau, jika menggunakan Android 7 atau versi lebih lama, ketuk Lainnya... di bagian Nirkabel & jaringan .
+3.  Ketuk VPN .
+4.  Ketuk Tambahkan Profil VPN atau ikon + di kanan atas layar.
+5.  Masukkan apa pun yang Anda suka pada kolom Nama .
+6.  Pilih L2TP/IPSec PSK di menu tarik-turun Jenis .
+7.  Masukkan Your VPN Server IPpada kolom Alamat server .
+8.  Biarkan bidang rahasia L2TP kosong.
+9.  Biarkan bidang pengenal IPSec kosong.
+10. Masukkan bidang kunci pra-berbagiYour VPN IPsec PSK IPSec .
+11. Ketuk Simpan .
+12. Ketuk koneksi VPN baru.
+13. Masukkan Your VPN Usernamepada kolom Nama Pengguna .
+14. Masukkan Your VPN Passwordpada kolom Kata Sandi .
+15. Centang kotak Simpan informasi akun .
+16. Ketuk Hubungkan .
+============================
+Script By @jaringan_vpn
+END
+cat >/var/www/html/l2tp-windows-11.txt <<-END
+============================
+Windows 11
+============================
+1.  Klik kanan pada ikon nirkabel/jaringan di baki sistem Anda.
+2.  Pilih pengaturan Jaringan dan Internet , lalu pada halaman yang terbuka, klik VPN .
+3.  Klik tombol Tambahkan VPN .
+4.  Pilih Windows (bawaan) di menu tarik-turun penyedia VPN .
+5.  Masukkan apa pun yang Anda suka di kolom Nama koneksi .
+6.  Masukkan Your VPN Server IPpada kolom Nama atau alamat server .
+7.  Pilih L2TP/IPsec dengan kunci pra-berbagi di menu tarik-turun jenis VPN .
+8.  Masukkan Your VPN IPsec PSKpada kolom Kunci pra-berbagi .
+9.  Masukkan Your VPN Usernamepada kolom Nama pengguna .
+10. Masukkan Your VPN Passwordpada kolom Kata Sandi .
+11. Centang kotak Ingat info masuk saya .
+12. Klik Simpan untuk menyimpan rincian koneksi VPN.
+Catatan: Perubahan registri satu kali ini diperlukan jika server dan/atau klien VPN berada di belakang NAT (misalnya router rumah).
+
+Untuk terhubung ke VPN: Klik tombol Connect , atau klik ikon nirkabel/jaringan di baki sistem Anda, klik VPN , lalu pilih entri VPN baru dan klik Connect . Jika diminta, masukkan Your VPN Usernamedan Password, lalu klik OK . Anda dapat memverifikasi bahwa lalu lintas Anda diarahkan dengan benar dengan mencari alamat IP Anda di Google . Seharusnya tertulis "Alamat IP publik Anda adalah Your VPN Server IP".
+============================
+Script By @jaringan_vpn
+END
+cat >/var/www/html/l2tp-windows-8-10.txt <<-END
+============================
+Windows 10 Dan 8
+============================
+1.  Klik kanan pada ikon nirkabel/jaringan di baki sistem Anda.
+2.  Pilih Buka pengaturan Jaringan & Internet , lalu pada halaman yang terbuka, klik Jaringan dan Pusat Berbagi .
+3.  Klik Siapkan koneksi atau jaringan baru .
+4.  Pilih Hubungkan ke tempat kerja dan klik Berikutnya .
+5.  Klik Gunakan koneksi Internet saya (VPN) .
+6.  Masukkan "Your VPN Server IP" pada kolom alamat Internet .
+7.  Masukkan apa pun yang Anda suka di kolom Nama tujuan , lalu klik Buat .
+8.  Kembali ke Pusat Jaringan dan Berbagi . Di sebelah kiri, klik Ubah pengaturan adaptor .
+9.  Klik kanan pada entri VPN baru dan pilih Properties .
+10. Klik tab Keamanan . Pilih "Protokol Tunneling Lapisan 2 dengan IPsec (L2TP/IPSec)" untuk Jenis VPN .
+11. Klik Izinkan protokol ini . Centang kotak centang "Protokol Autentikasi Jabat Tangan Tantangan (CHAP)" dan "Microsoft CHAP Versi 2 (MS-CHAP v2)".
+12. Klik tombol Pengaturan lanjutan .
+13. Pilih Gunakan kunci pra-berbagi untuk autentikasi dan masukkanYour VPN IPsec PSK Kunci .
+14. Klik OK untuk menutup pengaturan Lanjutan .
+15. Klik OK untuk menyimpan rincian koneksi VPN.
+Catatan: Perubahan registri satu kali ini diperlukan jika server dan/atau klien VPN berada di belakang NAT (misalnya router rumah).
+
+Untuk terhubung ke VPN: Klik ikon nirkabel/jaringan di baki sistem Anda, pilih entri VPN baru, lalu klik Sambungkan . Jika diminta, masukkan Your VPN Usernamedan Password, lalu klik OK . Anda dapat memverifikasi bahwa lalu lintas Anda diarahkan dengan benar dengan mencari alamat IP Anda di Google . Seharusnya tertulis "Alamat IP publik Anda adalah Your VPN Server IP".
+============================
+Script By @jaringan_vpn
+END
 print_success "L2TP DAN PPTP"
 }
 
 
 function ssh(){
 clear
-print_install "Memasang Password SSH"
+print_install "Password SSH"
     wget -O /etc/pam.d/common-password "${REPO}ssh/password"
 chmod +x /etc/pam.d/common-password
 
@@ -935,7 +1030,7 @@ print_success "Password SSH"
 
 function udp_mini(){
 clear
-print_install "Memasang Service Limit Quota"
+print_install "Service Limit Quota"
 wget -q -O /usr/local/sbin/quota "${REPO}limit/quota"
 chmod +x /usr/local/sbin/quota
 cd /usr/local/sbin/
@@ -1050,7 +1145,7 @@ print_success "Limit Quota Service"
 function ssh_slow(){
 clear
 # // Installing UDP Mini
-print_install "Memasang modul SlowDNS Server"
+print_install "Modul SlowDNS Server"
     wget -q -O /tmp/nameserver "${REPO}slowdns/nameserver" >/dev/null 2>&1
     chmod +x /tmp/nameserver
     bash /tmp/nameserver | tee /root/install.log
@@ -1060,7 +1155,7 @@ print_install "Memasang modul SlowDNS Server"
 clear
 function ins_SSHD(){
 clear
-print_install "Memasang SSHD"
+print_install "SSHD"
 wget -q -O /etc/ssh/sshd_config "${REPO}ws/sshd" >/dev/null 2>&1
 chmod 700 /etc/ssh/sshd_config
 /etc/init.d/ssh restart
@@ -1117,7 +1212,7 @@ print_success "OpenVPN"
 
 function ins_backup(){
 clear
-print_install "Memasang Backup Server"
+print_install "Backup Server"
 #BackupOption
 apt install rclone -y
 printf "q\n" | rclone config
@@ -1162,7 +1257,7 @@ print_success "Backup Server"
 clear
 function ins_swab(){
 clear
-print_install "Memasang Swap 1 G"
+print_install "Swap 1 G"
 gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | grep tag_name | sed -E 's/.*"v(.*)".*/\1/' | head -n 1)"
     gotop_link="https://github.com/xxxserxxx/gotop/releases/download/v$gotop_latest/gotop_v"$gotop_latest"_linux_amd64.deb"
     curl -sL "$gotop_link" -o /tmp/gotop.deb
@@ -1213,7 +1308,7 @@ print_success "Fail2ban"
 
 function ins_epro(){
 clear
-print_install "Menginstall ePro WebSocket Proxy"
+print_install "ePro WebSocket Proxy"
     wget -O /usr/bin/ws "${REPO}ws/ws" >/dev/null 2>&1
     wget -O /usr/bin/tun.conf "${REPO}ws/tun.conf" >/dev/null 2>&1
     wget -O /etc/systemd/system/ws.service "${REPO}ws/ws.service" >/dev/null 2>&1
@@ -1290,7 +1385,7 @@ print_success "All Packet"
 #Instal Menu
 function menu(){
     clear
-    print_install "Memasang Menu Packet"
+    print_install "Menu Packet"
     wget https://raw.githubusercontent.com/gapesta/scp/main/menu/menu.zip
     unzip menu.zip
     chmod +x menu/*
