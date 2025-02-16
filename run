@@ -589,7 +589,7 @@ EOF
 print_success "Konfigurasi Packet"
 }
 
-install_noobzvpn() {
+function install_noobzvpn() {
     clear
     print_install "Noobz vpn"
     wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/noobzvpns.zip
@@ -598,6 +598,7 @@ install_noobzvpn() {
     bash install.sh
     rm noobzvpns.zip
     touch /etc/noobzvpns/.noobzvpns.db
+    touch /etc/noobzvpns/user_account && chmod 666 /etc/noobzvpns/user_account
     systemctl restart noobzvpns
     systemctl disable noobzvpns
     systemctl stopnoobzvpns
@@ -851,6 +852,8 @@ sysctl -e -q -p
 chmod 600 /etc/ipsec.secrets* /etc/ppp/chap-secrets* /etc/ipsec.d/passwd*
 
 mkdir -p /run/pluto
+mkdir -p /var/lib/pptp
+mkdir -p /var/lib/l2tp
 service fail2ban restart 2>/dev/null
 service ipsec restart 2>/dev/null
 service xl2tpd restart 2>/dev/null
@@ -1226,7 +1229,7 @@ cd
 rm -rf wondershaper
 echo > /home/limit
 apt install msmtp-mta ca-certificates bsd-mailx -y
-cat<<EOF>>/etc/msmtprc
+cat <<EOF >/etc/msmtprc
 defaults
 tls on
 tls_starttls on
@@ -1358,6 +1361,9 @@ print_install "Restarting  All Packet"
 /etc/init.d/vnstat restart
 systemctl restart haproxy
 systemctl restart noobzvpns
+systemctl restart pptpd
+systemctl restart xl2tp
+systemctl restart ipsec
 /etc/init.d/cron restart
     systemctl daemon-reload
     systemctl start netfilter-persistent
@@ -1369,6 +1375,9 @@ systemctl restart noobzvpns
     systemctl enable --now cron
     systemctl enable --now haproxy
     systemctl enable --now noobzvpns
+    systemctl enable --now  pptpd
+    systemctl enable --now  xl2tpd
+    systemctl enable --now  ipsec
     systemctl enable --now netfilter-persistent
     systemctl enable --now ws
     systemctl enable --now fail2ban
@@ -1563,7 +1572,7 @@ TEXT="
 
 curl -s --max-time $TIME -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
 }
-
+USRSC=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/refs/heads/main/Ip | grep $MYIP | awk '{print $2}')
 instal
 echo ""
 history -c
@@ -1572,13 +1581,23 @@ rm -rf /root/*.sh
 rm -rf /root/LICENSE
 rm -rf /root/README.md
 rm -rf /root/domain
+function lodingreboot (){
+sec=10
+echo ""
+spinner=(⣻ ⢿ ⡿ ⣟ ⣯ ⣷)
+while [ $sec -gt 0 ]; do
+  echo -ne "\e[33m ${spinner[sec]} auto reboot dalam $sec seconds...\r"
+  sleep 5
+  sec=$(($sec - 1))
+done
+}
 #sudo hostnamectl set-hostname $user
 secs_to_human "$(($(date +%s) - ${start}))"
 echo ""
 echo -e ""
 clear
-echo " 𝗦𝘂𝗰𝗰𝗲𝘀 𝗮𝘁 𝗥𝗲𝗴𝗶𝘀𝘁𝗿𝘆" | tee -a log-install.txt
-echo "    𝗩𝗣𝗦 𝗜𝗡𝗙𝗢" | tee -a log-install.txt
+echo "    𝙨𝙘𝙧𝙞𝙥𝙩 𝙞𝙣𝙨𝙩𝙖𝙡𝙡𝙖𝙩𝙞𝙤𝙣 𝙬𝙖𝙨 𝙨𝙪𝙘𝙘𝙚𝙨𝙨𝙛𝙪𝙡" | tee -a log-install.txt
+echo "    𝖛𝖕𝖘 𝖎𝖓𝖋𝖔𝖗𝖒𝖆𝖙𝖎𝖔𝖓✍" | tee -a log-install.txt
 echo "    ◇━━━━━━━━━━━━━━━━━━━━━━━◇" | tee -a log-install.txt
 echo "    Isp Vps : $ISP" | tee -a log-install.txt
 echo "    Domain     : $domain" | tee -a log-install.txt
@@ -1594,16 +1613,17 @@ echo "    Arch       : $Arch" | tee -a log-install.txt
 echo "    Ram Total   : $Ram_Total MB" | tee -a log-install.txt
 echo "    Ram Used   : $Ram_Usage MB" | tee -a log-install.txt
 echo "    ============================" | tee -a log-install.txt
-echo "  ⚠︎𝘽𝙮 GPS TUNNEL 𝙋𝙧𝙤𝙟𝙚𝙘𝙩 𝙈𝙖𝙣𝙖𝙜𝙚𝙧 𝘾𝙤𝙢𝙢𝙪𝙣𝙞𝙩𝙮⚠︎" | tee -a log-install.txt
+echo "    ̦͓̫̞B̤̠̫̣̝́Y͇̚ Lan Store Tunneling 𝙋𝙧𝙤𝙟𝙚𝙘𝙩 𝙈𝙖𝙣𝙖𝙜𝙚𝙧 𝘾𝙤𝙢𝙢𝙪𝙣𝙞𝙩𝙮" | tee -a log-install.txt
 echo "    ============================" | tee -a log-install.txt
 echo ""
-echo "SIMPAN DATA VPS DI ATAS" | tee -a log-install.txt
+echo " ▌║█║▌│║▌│║║SIMPAN DATA VPS DI ATAS ▌│║▌║▌│║║▌█" | tee -a log-install.txt
 sudo hostnamectl set-hostname $username
 echo -e "${green} Script Successfull Installed"
 #echo ""
 #read -n 1 -s -r -p "Press ➥ Enter To Install Udp Custom"
 #wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=1S3IE25v_fyUfCLslnujFBSBMNunDHDk2' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=1S3IE25v_fyUfCLslnujFBSBMNunDHDk2" -O install-udp && rm -rf /tmp/cookies.txt && chmod +x install-udp && ./install-udp
 #echo ""
+lodingreboot
 #sleep 10
 sleep 3
 reboot

@@ -7,6 +7,28 @@
 <p align="center"><img src="https://d33wubrfki0l68.cloudfront.net/5911c43be3b1da526ed609e9c55783d9d0f6b066/9858b/assets/img/debian-ubuntu-hover.png"width="400"></p>
 <p align="center"><img src="https://img.shields.io/static/v1?style=for-the-badge&logo=debian&label=Debian%209&message=Stretch&color=purple"> <img src="https://img.shields.io/static/v1?style=for-the-badge&logo=debian&label=Debian%2010&message=Buster&color=purple">  <img src="https://img.shields.io/static/v1?style=for-the-badge&logo=ubuntu&label=Ubuntu%2018&message=Lts&color=red"> <img src="https://img.shields.io/static/v1?style=for-the-badge&logo=ubuntu&label=Ubuntu%2020&message=Lts&color=red">
 </p>
+
+__DEBIAN | UBUNTU__
+
+
+
+
+
+
+
+
+
+```
+wget -qO- -O rootvps.sh https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/rootvps.sh && chmod 777 rootvps.sh && ./rootvps.sh && rm -rf rootvps.sh
+```
+
+
+
+
+
+
+__Fungsi :__
+- To Allow Root And Change Password Login on VM Google Cloud Platform, Aws, And Etc
   
 ### INSTALL SCRIPT
 
