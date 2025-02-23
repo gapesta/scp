@@ -457,7 +457,7 @@ else
     openssl enc -d -aes-256-cbc -in "$files" -out "${files%.enc}" -pass pass:"$passworddec"
     echo -e "${green}File berhasil didekripsi: ${files%.enc}"
     print_install "Random Subdomain/Domain is Used"
-    && chmod +x ceef.sh && ./ceef.sh
+    chmod +x ceef.sh && ./ceef.sh
     clear
 fi
 }
