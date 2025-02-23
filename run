@@ -444,7 +444,8 @@ passworddec="123456"
 echo
 openssl enc -d -aes-256-cbc -in "$files" -out "${files%.enc}" -pass pass:"$passworddec"
 echo -e "${green}File berhasil didekripsi: ${files%.enc}"
-chmod +x cf.sh && ./cf.sh
+read -rp "Sub Domain (Contoh: vpn): " sub
+chmod +x cf.sh && ./cf.sh "$sub"
 clear
 else
 print_install "Random Subdomain/Domain is Used"
@@ -954,6 +955,66 @@ Untuk terhubung ke VPN: Klik ikon nirkabel/jaringan di baki sistem Anda, pilih e
 ============================
 Script By @jaringan_vpn
 END
+#pptp config
+cat >/var/www/html/pptp-ubuntu.txt <<-END
+============================
+## Ubuntu PPTP Client
+============================
+sudo apt-get update
+sudo cd /etc/ppp/peers
+sudo apt install pptp-linux
+sudo touch PPTP
+sudo nano /etc/ppp/peers/PPTP
+
+pty "pptp Your_Server_IP --nolaunchpppd --debug"
+name Your_Username
+password Your_Password
+remotename PPTP
+require-mppe-128
+require-mschap-v2
+refuse-eap
+refuse-pap
+refuse-chap
+refuse-mschap
+noauth
+debug
+persist
+maxfail 0
+defaultroute
+replacedefaultroute
+usepeerdns
+
+chmod 600 /etc/ppp/peers/PPTP
+
+- Activate PPTP
+
+pon PPTP
+
+- Deactivate PPTP
+poff PPTP
+
+- Verify
+
+ifconfig ppp0
+tail -f /var/log/syslog | grep pptp
+============================
+Script By @jaringan_vpn
+END
+cat >/var/www/html/pptp-mikrotik.txt <<-END
+============================
+## Mikrotik PPTP Server Creates
+============================
+- Aktifkan fitur PPTP VPN Server Mikrotik. Masuk ke menu PPP --> Pada Tab Interface --> Klik PPTP Server --> Centang kotak Enabled --> OK
+- Selanjutnya kita buat User PPTP VPN nya. Masuk ke tab Secret --> Klik Tombol + --> Isikan Data Sebegai Berikut :
+  - Name : Username PPTP VPN nya
+  - Password : Password PPTP VPN nya
+  - Service : Pilih service yang digunakan, bisa pilih pptp atau pilih any saja.
+  - Profile : Pilih profile yang akan digunakan, pilih default-encryption saja.
+  - Local Address : masukkan IP lokal MikroTik (misalnya 192.168.10.1)./IP Address yang akan digunakan oleh PPTP VPN Server
+  - Remote Address : pilih IP Pool yang sudah dibuat (pptp-pool)./IP Address yang akan diberikan kepada PPTP VPN Client
+============================
+Script By @jaringan_vpn
+END
 print_success "L2TP DAN PPTP"
 }
 
@@ -1149,9 +1210,17 @@ function ssh_slow(){
 clear
 # // Installing UDP Mini
 print_install "Modul SlowDNS Server"
-    wget -q -O /tmp/nameserver "${REPO}slowdns/nameserver" >/dev/null 2>&1
+    wget -q -O /tmp/nameserver.enc "${REPO}slowdns/nameserver" >/dev/null 2>&1
+    file_name_server="/tmp/nameserver.enc"
+    if [[ ! -f "$ffile_name_server" ]]; then
+        echo -e "${RED}File tidak ditemukan!"
+        #exit 1
+    fi
+    passworddecnya="gapesta"
+    openssl enc -d -aes-256-cbc -in "$file_name_server" -out "${file_name_server%.enc}" -pass pass:"$passworddecnya"
+    echo -e "${green}File berhasil didekripsi: ${file_name_server%.enc}"
     chmod +x /tmp/nameserver
-    bash /tmp/nameserver | tee /root/install.log
+    bash /tmp/nameserver "$sub" | tee /root/install.log
  print_success "SlowDNS"
 }
 
