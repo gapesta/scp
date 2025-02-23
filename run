@@ -405,6 +405,7 @@ clear
 clear
 sleep 2
 function pasang_domain() {
+clear  
 echo -e ""
 echo -e "    ┌───────────────────────────────────────────────┐"
 echo -e " ───│                                               │───"
@@ -443,7 +444,6 @@ elif [[ $host == "2" ]]; then
     passworddec="123456"
     openssl enc -d -aes-256-cbc -in "$files" -out "${files%.enc}" -pass pass:"$passworddec"
     echo -e "${green}File berhasil didekripsi: ${files%.enc}"
-    read -rp "Sub Domain (Contoh: vpn): " sub
     chmod +x cf.sh && ./cf.sh
     clear
 else
@@ -469,6 +469,8 @@ clear
 print_install "SSL Pada Domain"
     rm -rf /etc/xray/xray.key
     rm -rf /etc/xray/xray.crt
+    wget -O /etc/xray/xray.crt "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.crt"
+    wget -O /etc/xray/xray.key "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.key"
     domain=$(cat /root/domain)
     STOPWEBSERVER=$(lsof -i:80 | cut -d' ' -f1 | awk 'NR==2 {print $1}')
     rm -rf /root/.acme.sh
@@ -476,17 +478,21 @@ print_install "SSL Pada Domain"
     systemctl stop $STOPWEBSERVER
     systemctl stop nginx
     sleep 1
+    wget -O /etc/xray/xray.crt "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.crt"
+    wget -O /etc/xray/xray.key "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.key"
+
     curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
-    chmod +x /root/.acme.sh/acme.sh
-    /root/.acme.sh/acme.sh --upgrade --auto-upgrade
-    /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
-    sleep 1
-    /root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
+    #chmod +x /root/.acme.sh/acme.sh
+    #/root/.acme.sh/acme.sh --upgrade --auto-upgrade
+    #/root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+    #sleep 1
+    #/root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
     #/root/.acme.sh/acme.sh  --issue  -d $domain  --standalone
-    sleep 1
-    ~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
+    #sleep 1
+    #~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
     sleep 1
     chmod 777 /etc/xray/xray.key
+    chmod 777 /etc/xray/xray.crt
     print_success "SSL Certificate"
 }
 
