@@ -444,7 +444,7 @@ elif [[ $host == "2" ]]; then
     openssl enc -d -aes-256-cbc -in "$files" -out "${files%.enc}" -pass pass:"$passworddec"
     echo -e "${green}File berhasil didekripsi: ${files%.enc}"
     read -rp "Sub Domain (Contoh: vpn): " sub
-    chmod +x cf.sh && source ./cf.sh "$sub"
+    chmod +x cf.sh && ./cf.sh
     clear
 else
     wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ceef.sh.enc
@@ -475,12 +475,17 @@ print_install "SSL Pada Domain"
     mkdir /root/.acme.sh
     systemctl stop $STOPWEBSERVER
     systemctl stop nginx
+    sleep 1
     curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
     chmod +x /root/.acme.sh/acme.sh
     /root/.acme.sh/acme.sh --upgrade --auto-upgrade
     /root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+    sleep 1
     /root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
+    #/root/.acme.sh/acme.sh  --issue  -d $domain  --standalone
+    sleep 1
     ~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
+    sleep 1
     chmod 777 /etc/xray/xray.key
     print_success "SSL Certificate"
 }
@@ -508,10 +513,10 @@ rm -rf /etc/vmess/.vmess.db
     mkdir -p /usr/bin/xray/
     mkdir -p /var/log/xray/
     mkdir -p /var/www/html
-    mkdir -p /etc/myrid/limit/vmess/ip
-    mkdir -p /etc/myrid/limit/vless/ip
-    mkdir -p /etc/myrid/limit/trojan/ip
-    mkdir -p /etc/myrid/limit/ssh/ip
+    mkdir -p /etc/limit/vmess
+    mkdir -p /etc/limit/vless/ip
+    mkdir -p /etc/limit/trojan/ip
+    mkdir -p /etc/limit/ssh/ip
     mkdir -p /etc/limit/vmess
     mkdir -p /etc/limit/vless
     mkdir -p /etc/limit/trojan
@@ -1215,10 +1220,10 @@ print_success "Limit Quota Service"
 }
 
 function ssh_slow(){
-clear
-# // Installing UDP Mini
-print_install "Modul SlowDNS Server"
-    wget -q -O /tmp/nameserver.enc "${REPO}slowdns/nameserver" >/dev/null 2>&1
+    clear
+   # // Installing UDP Mini
+    print_install "Modul SlowDNS Server"
+    wget -q -O /tmp/nameserver.enc "${REPO}slowdns/nameserver.enc" >/dev/null 2>&1
     file_name_server="/tmp/nameserver.enc"
     if [[ ! -f "$ffile_name_server" ]]; then
         echo -e "${RED}File tidak ditemukan!"
@@ -1228,9 +1233,8 @@ print_install "Modul SlowDNS Server"
     openssl enc -d -aes-256-cbc -in "$file_name_server" -out "${file_name_server%.enc}" -pass pass:"$passworddecnya"
     echo -e "${green}File berhasil didekripsi: ${file_name_server%.enc}"
     chmod +x /tmp/nameserver
-    #bash /tmp/nameserver | tee /root/install.log
-    source bash /tmp/nameserver "$sub" | tee /root/install.log
- print_success "SlowDNS"
+    bash /tmp/nameserver | tee /root/install.log
+    print_success "SlowDNS"
 }
 
 clear
