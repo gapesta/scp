@@ -424,33 +424,41 @@ echo -e " "
 read -p "   Please select numbers 1-2 or Any Button(Random) : " host
 echo ""
 if [[ $host == "1" ]]; then
-echo -e "   \e[1;32mPlease Enter Your Subdomain $NC"
-read -p "   Subdomain: " host1
-echo "IP=" >> /var/lib/kyt/ipvps.conf
-echo $host1 > /etc/xray/domain
-echo $host1 > /root/domain
-echo ""
+   echo -e "   \e[1;32mPlease Enter Your Subdomain $NC"
+   read -p "   Subdomain: " host1
+   echo "IP=" >> /var/lib/kyt/ipvps.conf
+   echo $host1 > /etc/xray/domain
+   echo $host1 > /root/domain
+   echo ""
 elif [[ $host == "2" ]]; then
-echo ""
-#install cf
-#dec cf
-wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh.enc
-files="cf.sh.enc"
-if [[ ! -f "$files" ]]; then
-    echo -e "${RED}File tidak ditemukan!"
-    #exit 1
-fi
-passworddec="123456"
-echo
-openssl enc -d -aes-256-cbc -in "$files" -out "${files%.enc}" -pass pass:"$passworddec"
-echo -e "${green}File berhasil didekripsi: ${files%.enc}"
-read -rp "Sub Domain (Contoh: vpn): " sub
-chmod +x cf.sh && ./cf.sh "$sub"
-clear
+   echo ""
+    #install cf
+    #dec cf
+    wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh.enc
+    files="cf.sh.enc"
+    if [[ ! -f "$files" ]]; then
+        echo -e "${RED}File tidak ditemukan!"
+        #exit 1
+    fi
+    passworddec="123456"
+    openssl enc -d -aes-256-cbc -in "$files" -out "${files%.enc}" -pass pass:"$passworddec"
+    echo -e "${green}File berhasil didekripsi: ${files%.enc}"
+    read -rp "Sub Domain (Contoh: vpn): " sub
+    chmod +x cf.sh && source ./cf.sh "$sub"
+    clear
 else
-print_install "Random Subdomain/Domain is Used"
-wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh && chmod +x cf.sh && ./cf.sh
-clear
+    wget https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ceef.sh.enc
+    files="ceef.sh.enc"
+    if [[ ! -f "$files" ]]; then
+        echo -e "${RED}File tidak ditemukan!"
+        #exit 1
+    fi
+    passworddec="123456"
+    openssl enc -d -aes-256-cbc -in "$files" -out "${files%.enc}" -pass pass:"$passworddec"
+    echo -e "${green}File berhasil didekripsi: ${files%.enc}"
+    print_install "Random Subdomain/Domain is Used"
+    && chmod +x ceef.sh && ./ceef.sh
+    clear
 fi
 }
 
@@ -1220,7 +1228,8 @@ print_install "Modul SlowDNS Server"
     openssl enc -d -aes-256-cbc -in "$file_name_server" -out "${file_name_server%.enc}" -pass pass:"$passworddecnya"
     echo -e "${green}File berhasil didekripsi: ${file_name_server%.enc}"
     chmod +x /tmp/nameserver
-    bash /tmp/nameserver "$sub" | tee /root/install.log
+    #bash /tmp/nameserver | tee /root/install.log
+    source bash /tmp/nameserver "$sub" | tee /root/install.log
  print_success "SlowDNS"
 }
 
