@@ -279,7 +279,6 @@ function is_root() {
 print_install "Membuat direktori xray"
     mkdir -p /etc/xray
     
-    curl -s ipinfo.io/city >> /etc/xray/city
     curl -s ifconfig.me > /etc/xray/ipvps
     curl -s ipinfo.io/org | cut -d " " -f 2-10 >> /etc/xray/isp
     touch /etc/xray/domain
@@ -378,6 +377,7 @@ function base_package() {
     apt update -y
     apt upgrade -y
     apt dist-upgrade -y
+    apt install ruby -y
     gem install lolcat
     systemctl enable chronyd
     systemctl restart chronyd
@@ -396,7 +396,7 @@ function base_package() {
     sudo apt-get install -y --no-install-recommends software-properties-common
     echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
     echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selections
-    sudo apt-get install -y vnstat libnss3-dev libnspr4-dev pkg-config libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev libcurl4-nss-dev flex bison make libnss3-tools libevent-dev bc rsyslog dos2unix zlib1g-dev libssl-dev libsqlite3-dev sed dirmngr libxml-parser-perl build-essential gcc g++ ppp xl2tpd pptpd python htop lsof tar wget curl ruby zip unzip p7zip-full python3-pip libc6 util-linux build-essential msmtp-mta ca-certificates bsd-mailx iptables iptables-persistent netfilter-persistent net-tools openssl ca-certificates gnupg gnupg2 ca-certificates lsb-release gcc shc make cmake git screen socat xz-utils apt-transport-https gnupg1 dnsutils cron bash-completion ntpdate chrony jq openvpn easy-rsa
+    sudo apt-get install -y vnstat libnss3-dev libnspr4-dev pkg-config libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev libcurl4-nss-dev flex bison make libnss3-tools libevent-dev bc rsyslog dos2unix zlib1g-dev libssl-dev libsqlite3-dev sed dirmngr libxml-parser-perl build-essential gcc g++ ppp xl2tpd pptpd python htop lsof tar wget curl zip unzip p7zip-full python3-pip libc6 util-linux build-essential msmtp-mta ca-certificates bsd-mailx iptables iptables-persistent netfilter-persistent net-tools openssl ca-certificates gnupg gnupg2 ca-certificates lsb-release gcc shc make cmake git screen socat xz-utils apt-transport-https gnupg1 dnsutils cron bash-completion ntpdate chrony jq openvpn easy-rsa
     print_success "Packet Yang Dibutuhkan"
     
 }
@@ -474,37 +474,51 @@ print_install "SSL Pada Domain"
     domain=$(cat /root/domain)
     STOPWEBSERVER=$(lsof -i:80 | cut -d' ' -f1 | awk 'NR==2 {print $1}')
     rm -rf /root/.acme.sh
-    mkdir /root/.acme.sh
+    #mkdir /root/.acme.sh
     systemctl stop $STOPWEBSERVER
     systemctl stop nginx
     sleep 1
-    wget -O /etc/xray/xray.crt "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.crt"
-    wget -O /etc/xray/xray.key "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.key"
+    #wget -O /etc/xray/xray.crt "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.crt"
+    #wget -O /etc/xray/xray.key "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.key"
 
-    curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
+# Instal acme.sh untuk mendapatkan sertifikat valid
+    #curl https://acme-install.netlify.app/acme.sh -o /root/.acme.sh/acme.sh
     #chmod +x /root/.acme.sh/acme.sh
     #/root/.acme.sh/acme.sh --upgrade --auto-upgrade
     #/root/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+# Instal acme.sh untuk mendapatkan sertifikat valid
+    curl https://get.acme.sh | sh
+    ~/.acme.sh/acme.sh --set-default-ca --server letsencrypt
+
+# Dapatkan sertifikat SSL (pastikan domain mengarah ke server ini)
+    ~/.acme.sh/acme.sh --issue -d $domain --standalone
     #sleep 1
     #/root/.acme.sh/acme.sh --issue -d $domain --standalone -k ec-256
+    # Dapatkan sertifikat SSL (pastikan domain mengarah ke server ini)
     #/root/.acme.sh/acme.sh  --issue  -d $domain  --standalone
     #sleep 1
+    ~/.acme.sh/acme.sh --install-cert -d $domain \
+      --key-file /etc/xray/xray.key \
+      --fullchain-file /etc/xray/xray.crt \
+#      --reloadcmd "sudo systemctl restart xray"
     #~/.acme.sh/acme.sh --installcert -d $domain --fullchainpath /etc/xray/xray.crt --keypath /etc/xray/xray.key --ecc
-    sleep 1
+
     chmod 777 /etc/xray/xray.key
     chmod 777 /etc/xray/xray.crt
     print_success "SSL Certificate"
 }
 
 function make_folder_xray() {
-rm -rf /etc/vmess/.vmess.db
+    rm -rf /etc/vmess/.vmess.db
     rm -rf /etc/vless/.vless.db
     rm -rf /etc/trojan/.trojan.db
     rm -rf /etc/shadowsocks/.shadowsocks.db
     rm -rf /etc/ssh/.ssh.db
     rm -rf /etc/bot/.bot.db
     mkdir -p /etc/bot/
-    mkdir -p /etc/xray
+    mkdir -p /etc/xray/ssh
+    mkdir -p /etc/xray/vmess
+    mkdir -p /etc/xray/vless
     mkdir -p /etc/vmess
     mkdir -p /etc/vless
     mkdir -p /etc/ssnvpn
@@ -518,12 +532,12 @@ rm -rf /etc/vmess/.vmess.db
     mkdir -p /etc/shadowsocks
     mkdir -p /usr/bin/xray/
     mkdir -p /var/log/xray/
-    mkdir -p /var/www/html
+    mkdir -p /var/www/html/vless
+    mkdir -p /var/www/html/vmess
     mkdir -p /etc/limit/vmess
     mkdir -p /etc/limit/vless/ip
     mkdir -p /etc/limit/trojan/ip
     mkdir -p /etc/limit/ssh/ip
-    mkdir -p /etc/limit/vmess
     mkdir -p /etc/limit/vless
     mkdir -p /etc/limit/trojan
     mkdir -p /etc/limit/ssh
@@ -541,7 +555,9 @@ rm -rf /etc/vmess/.vmess.db
     echo "& plughin Account" >>/etc/vless/.vless.db
     echo "& plughin Account" >>/etc/trojan/.trojan.db
     echo "& plughin Account" >>/etc/shadowsocks/.shadowsocks.db
-    echo "& plughin Account" >>/etc/ssh/.ssh.db
+    ##echo "& plughin Account" >>/etc/ssh/.ssh.db
+    chmod 766 /etc/vmess/.vmess.db
+    chmod 766 /etc/vless/.vless.db
     }
 #Instal Xray
 function install_xray() {
@@ -558,6 +574,8 @@ bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release
  
     # // Ambil Config Server
     wget -O /etc/xray/config.json "${REPO}xray/config.json" >/dev/null 2>&1
+    chmod 766 "/etc/xray/config.json"
+    sed -i "s/xxx/${domain}/g" /etc/xray/config.json
     #wget -O /usr/local/bin/xray "${REPO}xray/xray.linux.64bit" >/dev/null 2>&1
     wget -O /etc/systemd/system/runn.service "${REPO}xray/runn.service" >/dev/null 2>&1
     #chmod +x /usr/local/bin/xray
@@ -1231,15 +1249,20 @@ function ssh_slow(){
     print_install "Modul SlowDNS Server"
     wget -q -O /tmp/nameserver.enc "${REPO}slowdns/nameserver.enc" >/dev/null 2>&1
     file_name_server="/tmp/nameserver.enc"
-    if [[ ! -f "$ffile_name_server" ]]; then
-        echo -e "${RED}File tidak ditemukan!"
+    #if [[ ! -f "$ffile_name_server" ]]; then
+    #    echo -e "${RED}File tidak ditemukan!"
         #exit 1
-    fi
+    #fi
     passworddecnya="gapesta"
     openssl enc -d -aes-256-cbc -in "$file_name_server" -out "${file_name_server%.enc}" -pass pass:"$passworddecnya"
     echo -e "${green}File berhasil didekripsi: ${file_name_server%.enc}"
     chmod +x /tmp/nameserver
     bash /tmp/nameserver | tee /root/install.log
+    systemctl daemon-reload
+    systemctl enable server.service
+    systemctl enable client.service
+    systemctl start server.service
+    systemctl start client.service
     print_success "SlowDNS"
 }
 
@@ -1463,9 +1486,9 @@ systemctl restart ipsec
     systemctl enable --now cron
     systemctl enable --now haproxy
     systemctl enable --now noobzvpns
-    systemctl enable --now  pptpd
-    systemctl enable --now  xl2tpd
-    systemctl enable --now  ipsec
+    systemctl enable --now pptpd
+    systemctl enable --now xl2tpd
+    systemctl enable --now ipsec
     systemctl enable --now netfilter-persistent
     systemctl enable --now ws
     systemctl enable --now fail2ban
@@ -1617,8 +1640,8 @@ function password_default() {
 domain=$(cat /etc/xray/domain)
     MYIP=$(curl -sS ipv4.icanhazip.com)
     userdel jame > /dev/null 2>&1
-    Username="kyt"
-    Password=kyt
+    Username="gps"
+    Password=gps
     mkdir -p /home/script/
     chmod 777 /home/script/
     useradd -r -d /home/script -s /bin/bash -M $Username > /dev/null 2>&1
@@ -1655,8 +1678,8 @@ TEXT="
 <code>Exp Sc  : </code><code>$EXPSC</code>
 <code>────────────────────</code>
 <i>Automatic Notification from</i>
-<i>✌𝓓𝓮𝓿𝓲𝓵𝓼𝓣𝓾𝓷𝓷𝓮𝓵✌™ </i>
-"'&reply_markup={"inline_keyboard":[[{"text":"ORDER🐳","url":"https://t.me/gapesta04"},{"text":"CHANNEL🐬","url":"https://t.me/gapestastore"}]]}'
+<i>✌gps𝓣𝓾𝓷𝓷𝓮𝓵✌™ </i>
+"'&reply_markup={"inline_keyboard":[[{"text":"ORDER🐳","url":"https://t.me/jaringanvpn"},{"text":"CHANNEL🐬","url":"https://t.me/gapestastore"}]]}'
 
 curl -s --max-time $TIME -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
 }
@@ -1675,7 +1698,7 @@ echo ""
 spinner=(⣻ ⢿ ⡿ ⣟ ⣯ ⣷)
 while [ $sec -gt 0 ]; do
   echo -ne "\e[33m ${spinner[sec]} auto reboot dalam $sec seconds...\r"
-  sleep 5
+  sleep 4
   sec=$(($sec - 1))
 done
 }
@@ -1713,5 +1736,5 @@ echo -e "${green} Script Successfull Installed"
 #echo ""
 lodingreboot
 #sleep 10
-sleep 3
+sleep 2
 reboot
