@@ -195,61 +195,8 @@
            "serviceName": "ss-grpc"
           }
        }
-    },
-    {
-      "listen": "127.0.0.1",
-      "port": "10009",
-      "protocol": "vless",
-       "settings": {
-           "decryption":"none",
-             "clients": [
-                {
-                  "id": "4e93f9a8-e0f8-483f-b0c2-6653804120c3",
-                  "flow": "xtls-rprx-vision"
- #vless-hdua
-              }
-           ]
-        },
-        "streamSettings":{
-          "network": "h2",
-          "httpSettings": {
-          "path": "/api/h2",
-        },
-          "security": "tls",
-          "tlsSettings": {
-            "serverName": "xxx",
-            "certificates": [
-              {
-                "certificateFile": "/etc/xray/xray.crt",
-                "keyFile": "/etc/xray/xray.key"
-              }
-            ],
-            "allowInsecure": false
-          },
-         }
-    },
-    {
-      "listen": "127.0.0.1",
-      "port": "100010",
-      "protocol": "vless",
-       "settings": {
-           "decryption":"none",
-             "clients": [
-                {
-                  "id": "4e93f9a8-e0f8-483f-b0c2-6653804120c3",
-                  "flow": "xtls-rprx-vision"
- #vless-http
-                }
-           ]
-        },
-      "streamSettings": {
-              "network": "http",
-              "httpSettings": {
-                "path": "/api/v2"
-              },
-              "security": "none"
-            }
     }
+    
   ],
   "outbounds": [
     {
