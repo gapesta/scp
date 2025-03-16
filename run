@@ -678,7 +678,9 @@ PUBLIC_IP=$(wget -qO- ipinfo.io/ip);
 
 #apt-get install -y strongswan
 apt-get remove --purge libreswan
-apt-get install -y strongswan libreswan
+apt install -y strongswan libreswan
+apt install -y strongswan-pki libstrongswan-extra-plugins \
+  libcharon-extra-plugins libcharon-standard-plugins
 
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS = -w
@@ -692,15 +694,15 @@ EOF
 if ! grep -qs IFLA_XFRM_LINK /usr/include/linux/if_link.h; then
   echo "USE_XFRM_INTERFACE_IFLA_HEADER = true" >> Makefile.inc.local
 fi
-if [[ ${OS} == "debian" ]]; then
-   if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
+#if [[ ${OS} == "debian" ]]; then
+#   if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
        apt-get -y install libsystemd-dev
-  fi
-elif [[ ${OS} == "ubuntu" ]]; then
-   if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
-      apt-get -y install libsystemd-dev
-   fi
-fi
+#  fi
+#elif [[ ${OS} == "ubuntu" ]]; then
+#   if [ "$(packaging/utils/lswan_detect.sh init)" = "systemd" ]; then
+#      apt-get -y install libsystemd-dev
+#   fi
+#fi
 NPROCS=$(grep -c ^processor /proc/cpuinfo)
 [ -z "$NPROCS" ] && NPROCS=1
 make "-j$((NPROCS+1))" -s base && make -s install-base
@@ -787,6 +789,8 @@ cat > /etc/ipsec.secrets <<EOF
 %any  %any  : PSK "$VPN_IPSEC_PSK"
 EOF
 
+mkdir -p /etc/xl2tpd
+mkdir -p /etc/ppp
 
 # Create xl2tpd config
 cat > /etc/xl2tpd/xl2tpd.conf <<EOF
@@ -930,6 +934,7 @@ EOL
 
 chmod 777 /etc/ppp/ip-up.d/log-l2tp
 chmod 777 /etc/ppp/ip-up.d/telegram-notify
+mkdir -p /etc/strongswan
 
 # Configure StrongSwan logging
 tee /etc/strongswan/strongswan.conf > /dev/null <<EOL
@@ -1153,8 +1158,8 @@ cat >/var/www/html/pptp-mikrotik.txt <<-END
 ============================
 Script By @jaringan_vpn
 END
-journalctl -u strongswan
-tail -f /var/log/strongswan.log
+#journalctl -u strongswan
+#tail -f /var/log/strongswan.log
 print_success "L2TP DAN PPTP"
 }
 
