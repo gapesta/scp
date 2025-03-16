@@ -396,7 +396,7 @@ function base_package() {
     sudo apt-get install -y --no-install-recommends software-properties-common
     echo iptables-persistent iptables-persistent/autosave_v4 boolean true | debconf-set-selections
     echo iptables-persistent iptables-persistent/autosave_v6 boolean true | debconf-set-selectionsxl2tpd
-    sudo apt-get install -y vnstat libnss3-dev libnspr4-dev pkg-config libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev libcurl4-nss-dev flex bison make libnss3-tools libevent-dev bc rsyslog dos2unix zlib1g-dev libssl-dev libsqlite3-dev sed dirmngr libxml-parser-perl build-essential gcc g++ ppp  pptpd python htop lsof tar wget curl zip unzip p7zip-full python3-pip libc6 util-linux build-essential msmtp-mta ca-certificates bsd-mailx iptables iptables-persistent netfilter-persistent net-tools openssl ca-certificates gnupg gnupg2 ca-certificates lsb-release gcc shc make cmake git screen socat xz-utils apt-transport-https gnupg1 dnsutils cron bash-completion ntpdate chrony jq openvpn easy-rsa
+    sudo apt-get install -y vnstat libnss3-dev libnspr4-dev pkg-config libpam0g-dev libcap-ng-dev libcap-ng-utils libselinux1-dev libcurl4-nss-dev flex bison make libnss3-tools libevent-dev bc rsyslog dos2unix zlib1g-dev libssl-dev libsqlite3-dev sed dirmngr libxml-parser-perl build-essential gcc g++ pptpd python htop lsof tar wget curl zip unzip p7zip-full python3-pip libc6 util-linux build-essential msmtp-mta ca-certificates bsd-mailx iptables iptables-persistent netfilter-persistent net-tools openssl ca-certificates gnupg gnupg2 ca-certificates lsb-release gcc shc make cmake git screen socat xz-utils apt-transport-https gnupg1 dnsutils cron bash-completion ntpdate chrony jq openvpn easy-rsa
     print_success "Packet Yang Dibutuhkan"
     
 }
@@ -676,11 +676,12 @@ PUBLIC_IP=$(wget -qO- ipinfo.io/ip);
 #tar xzf "$swan_file" && /bin/rm -f "$swan_file"
 #cd "libreswan-$SWAN_VER" || exit 1
 
-#apt-get install -y strongswan
-apt-get remove --purge libreswan
-apt install -y strongswan libreswan
+apt install -y strongswan
+apt remove --purge libreswan
+apt install -y libreswan
 apt install -y strongswan-pki libstrongswan-extra-plugins \
-  libcharon-extra-plugins libcharon-standard-plugins
+  libcharon-extra-plugins libcharon-standard-plugins \
+  strongswan-starter xl2tpd ppp
 
 cat > Makefile.inc.local <<'EOF'
 WERROR_CFLAGS = -w
@@ -871,6 +872,11 @@ END
 
 pesan "Updating IPTables rules..."
 service fail2ban stop >/dev/null 2>&1
+iptables -A INPUT -p udp --dport 500 -j ACCEPT  # IKE
+iptables -A INPUT -p udp --dport 1701 -j ACCEPT # L2TP
+iptables -A INPUT -p udp --dport 4500 -j ACCEPT # NAT-T
+iptables -A INPUT -p esp -j ACCEPT              # ESP packets
+iptables -A INPUT -p ah -j ACCEPT               # AH packets
 iptables -t nat -I POSTROUTING -s 192.168.43.0/24 -o $NET_IFACE -j MASQUERADE
 iptables -t nat -I POSTROUTING -s 192.168.42.0/24 -o $NET_IFACE -j MASQUERADE
 iptables -t nat -I POSTROUTING -s 192.168.41.0/24 -o $NET_IFACE -j MASQUERADE
@@ -953,7 +959,7 @@ charon {
     }
 }
 EOL
-cat >/var/lib/l2tp/mikrotik/portremote.txt <<-END
+cat >/var/lib/l2tp/mikrotik/portremote.db <<-END
 53
 5300
 80
@@ -981,7 +987,7 @@ cat >/var/lib/l2tp/mikrotik/portremote.txt <<-END
 
 END
 
-chmod 666 /var/lib/l2tp/mikrotik/portremote.txt
+chmod 666 /var/lib/l2tp/mikrotik/portremote.db
 
 cat >/var/www/html/l2tp-linux.txt <<-END
 ============================
@@ -1031,7 +1037,7 @@ Android
 ============================
 Script By @jaringan_vpn
 END
-cat >/var/www/html/l2tp-Winbox.txt <<-END
+cat >/var/www/html/mikrotik-Winbox.txt <<-END
 ============================
 ✅ Cara Akses WinBox dari Jarak Jauh
 ============================
@@ -1048,9 +1054,171 @@ Ip_Or_Host_serverini:port_remote
 
 /ip firewall filter add chain=input src-address=<IP-Anda> dst-port=<port mikrotik anda> action=accept
 /ip firewall filter add chain=input src-address=<IP-Server> dst-port=<port mikrotik anda> action=accept
+
+    • l2tp client : https://$domain:81/l2tp-clinet.tx
+    • docu winbox : https://docs.hostddns.us/docs/vpn-remote/tutorial-remote-mikrotik-via-winbox/
 ============================
 Script By @jaringan_vpn
 END
+    cat >/var/www/html/l2tp-clinet.txt <<EOF
+    ======================================================
+    1. Mengaktifkan L2TP Server di MikroTik
+    ======================================================
+        Gunakan perintah berikut di Terminal MikroTik untuk mengaktifkan L2TP VPN Server:
+    
+    /interface l2tp-server server set enabled=yes default-profile=default authentication=mschap2 use-ipsec=yes ipsec-secret=your_secret_ipsec
+
+       • enabled=yes → Mengaktifkan server L2TP.
+       • authentication=mschap2 → Gunakan MS-CHAPv2 untuk keamanan.
+       • use-ipsec=yes → Menggunakan IPsec untuk keamanan tambahan.
+       • ipsec-secret=your_secret → Ganti your_secret dengan kata sandi IPsec.
+
+    ======================================================
+    2. Membuat PPP Profile untuk L2TP
+    ======================================================
+        Setiap pengguna VPN L2TP memerlukan profil. Buat profil dengan perintah:
+
+    /ppp profile add name=l2tp-profile local-address=192.168.99.1 remote-address=192.168.99.100-192.168.99.200 dns-server=8.8.8.8
+        
+       • local-address=192.168.99.1 → Alamat IP yang diberikan kepada MikroTik.
+       • remote-address=192.168.99.100-192.168.99.200 → Range IP untuk klien VPN.
+       • dns-server=8.8.8.8 → Menggunakan Google DNS.
+
+    ======================================================
+    3. Menambahkan User VPN L2TP
+    ======================================================
+        Tambahkan user untuk koneksi L2TP:
+
+    /ppp secret add name=vpnuser password=yourpassword service=l2tp profile=l2tp-profile
+        
+       • name=vpnuser → Username VPN.
+       • password=yourpassword → Ganti dengan password yang diinginkan.
+       • service=l2tp → Untuk layanan L2TP.
+
+    ======================================================
+    4. Mengatur Firewall untuk Mengizinkan Koneksi L2TP
+    ======================================================
+        Pastikan aturan firewall mengizinkan koneksi ke VPN L2TP:
+
+    /ip firewall filter add chain=input protocol=udp dst-port=500,1701,4500 action=accept comment="Allow L2TP/IPsec VPN"
+        /ip firewall filter add chain=input protocol=tcp dst-port=500,1701,4500 action=accept comment="Allow L2TP/IPsec VPN"
+    /ip firewall filter add chain=input protocol=ipsec-esp action=accept comment="Allow IPsec"
+    /ip firewall filter add chain=input protocol=ipsec-ah action=accept comment="Allow IPsec AH"
+   
+        dst-port=500,1701,4500 → Ganti dengan password yang perlukan
+
+    ======================================================
+    5. Menambahkan Script agar Interface L2TP Selalu Running
+    ======================================================
+        Jika Anda ingin agar VPN otomatis berjalan kembali setelah restart,
+        tambahkan script yang akan memeriksa status interface dan mengaktifkan kembali jika mati.
+
+    /system script add name=CheckL2TP source=":if ([/interface l2tp-server server get enabled] = no) do={/interface l2tp-server server set enabled=yes}"
+
+        Lalu buat scheduler untuk menjalankan script ini setiap 5 menit:
+        
+    /system scheduler add name=CheckL2TP interval=5m on-event=CheckL2TP
+
+       • Semua perintah2 di atas tidak harus di lakukan semua
+       • L2TP Server akan aktif secara otomatis.
+       • VPN client bisa terhubung menggunakan username/password yang sudah dibuat.
+       • Firewall mengizinkan koneksi VPN.
+       • MikroTik akan memeriksa setiap 5 menit apakah VPN masih aktif.
+EOF
+    cat >/var/www/html/akses-webfig.txt <<EOF
+    ======================================================
+    1. Periksa Koneksi VPN
+    ======================================================
+        Pastikan MikroTik telah terhubung ke L2TP VPN dengan mengecek daftar interface aktif:
+    
+    /interface print
+    
+        Cari interface L2TP, misalnya l2tp-out1 atau sesuai nama yang Anda berikan.
+
+        Cek juga apakah MikroTik mendapatkan IP dari VPN dengan perintah:
+
+    /ip address print
+  
+        Jika MikroTik telah mendapatkan IP dari VPN, berarti koneksi sudah berhasil.  
+
+    ======================================================
+    2. Akses WebFig Menggunakan IP Lokal
+    ======================================================
+        Setelah VPN terhubung, Anda bisa mengakses WebFig dengan membuka browser dan masuk ke:
+
+    https://<IP-MikroTik-VPN>:<portremote>
+        
+       atau jika WebFig hanya menggunakan HTTP:
+
+    http://<IP-MikroTik-VPN>:<portremote>
+
+    ======================================================
+    3. Pastikan Firewall MikroTik Mengizinkan Akses WebFig
+    ======================================================
+        Jika tidak bisa diakses, cek apakah ada firewall yang memblokir koneksi ke WebFig:
+
+    /ip firewall filter print
+
+        Jika WebFig diblokir, tambahkan aturan agar bisa diakses melalui VPN:
+        
+    /ip firewall filter add chain=input src-address=0.0.0.0/0 dst-port=80,443 protocol=tcp action=accept comment="Allow WebFig via L2TP VPN"
+
+       • Sesuaikan 0.0.0.0/0 dengan subnet VPN Anda.
+       • sdst-port=80,443 → Ganti dengan password yang perlukan
+
+    ======================================================
+    4. Cek Binding WebFig ke Interface Tertentu
+    ======================================================
+        Jika WebFig tetap tidak bisa diakses, cek apakah WebFig hanya tersedia di interface tertentu:
+
+    /ip service print
+
+        Jika hanya tersedia di interface tertentu, Anda bisa mengubahnya agar WebFig bisa diakses dari VPN:
+
+    /ip service set www address=0.0.0.0/0
+    /ip service set www-ssl address=0.0.0.0/0
+
+        Atau jika ingin membatasi akses hanya dari jaringan VPN:
+
+    /ip service set www address=0.0.0.0/0
+    /ip service set www-ssl address=0.0.0.0/0
+
+       • Semua perintah2 di atas tidak harus di lakukan semua
+       • Dengan konfigurasi ini, Anda bisa mengakses WebFig MikroTik setelah VPN terhubung dengan membuka alamat IP VPN di browser.
+       • l2tp client : https://$domain:81/l2tp-clinet.tx
+       • docu mikhmo : https://docs.hostddns.us/docs/vpn-remote/tutorial-mikrotik-ovpn-client/
+EOF
+cat >/var/www/html/akses-mikhmo.txt <<EOF
+    ======================================================
+    1. Setup Mikhmon di MikroTik
+    ======================================================
+        Mikhmon berjalan di HTTP (default 8080) patikan cek port mikhmo, webfig, api, pastikan MikroTik mengizinkan akses:
+    
+    /ip firewall filter add chain=input protocol=tcp dst-port=8080 src-address=0.0.0.0/0 action=accept comment="Allow Mikhmon via L2TP VPN"
+
+    
+        port 8080 ganti dengan port remote
+
+        Jika Mikhmon tidak berjalan, pastikan WebFig & API diaktifkan:
+    
+    /ip service set www enabled=yes port=8080
+    /ip service set api enabled=yes port=8728
+ 
+        port 8080 ganti dengan port bebas kalian itu untuk port www atau web
+        port 8728 ganti dengan port bebas kalian itu untu port api mikrotik punya kalian
+
+    ======================================================
+    2. Tes Akses
+    ======================================================
+        Buka browser atau sofware mikhmo dan akses:
+
+   http://yourdomain.com:<portremote>
+
+       • Semua perintah2 di atas tidak harus di lakukan semua
+       • Selamat mencoba, semoga berhasil
+       • l2tp client : https://$domain:81/l2tp-clinet.tx
+       • docu mikhmo : https://docs.hostddns.us/docs/vpn-remote/tutorial-remote-mikhmon-dengan-vpn-remote/
+EOF
 cat >/var/www/html/l2tp-windows-11.txt <<-END
 ============================
 Windows 11
@@ -1759,8 +1927,8 @@ domain=$(cat /etc/xray/domain)
 
 function finish(){
 TIME="10"
-NAMES=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/refs/heads/main/Ip | grep $MYIP | awk '{print $3}')
-EXPSC=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/refs/heads/main/Ip | grep $MYIP | awk '{print $4}')
+NAMES=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/refs/heads/main/Ip | grep $MYIP | awk '{print $2}')
+EXPSC=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/refs/heads/main/Ip | grep $MYIP | awk '{print $3}')
 CHATID="5867172791"
 LOCAL_DATE="/usr/bin/"
 MYIP=$(wget -qO- ipinfo.io/ip)
@@ -1788,7 +1956,7 @@ TEXT="
 <code>────────────────────</code>
 <i>Automatic Notification from</i>
 <i>✌gps𝓣𝓾𝓷𝓷𝓮𝓵✌™ </i>
-"'&reply_markup={"inline_keyboard":[[{"text":"ORDER🐳","url":"https://t.me/jaringanvpn"},{"text":"CHANNEL🐬","url":"https://t.me/gapestastore"}]]}'
+"'&reply_markup={"inline_keyboard":[[{"text":"ORDER🐳","url":"https://t.me/@jaringan_vpn"},{"text":"CHANNEL🐬","url":"https://t.me/Lan Store"}]]}'
 
 curl -s --max-time $TIME -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
 }
@@ -1798,23 +1966,32 @@ USRSC=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/refs/heads/mai
 function notiftgm() {
 BOT_TOKEN="6862591374:AAHnO59rW7YPdIMgaf9H0lFueZpA2Hk76OA"
 CHAT_ID="5867172791"
+NAMES=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/refs/heads/main/Ip | grep $MYIP | awk '{print $2}')
+EXPSC=$(curl -sS https://raw.githubusercontent.com/gapesta/daftar/refs/heads/main/Ip | grep $MYIP | awk '{print $3}')
+LOCAL_DATE="/usr/bin/"
+MYIP=$(wget -qO- ipinfo.io/ip)
+ISP=$(wget -qO- ipinfo.io/org)
+CITY=$(curl -s ipinfo.io/city)
+TIMES=$(date +'%Y-%m-%d %H:%M:%S')
+RAMMS=$(free -m | awk 'NR==2 {print $2}')
+OSL=$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')
+domain=$(cat /etc/xray/domain)
 MESSAGE="
-────────────────────
-⚠️AUTOSCRIPT PREMIUM⚠️
-────────────────────
-Owner   : $NAMES
-Ip vps  : $MYIP
-Domain  : $domain
-Date    : $TIMES
-Ram     : $RAMMS MB
-System  : $OSL
-Country : $CITY
-Isp     : $ISP
-Exp Sc  : $EXPSC
-────────────────────
-Automatic Notification from
-✌gps𝓣𝓾𝓷𝓷𝓮𝓵✌™
-────────────────────"
+<code>────────────────────</code>
+<b>⚠️AUTOSCRIPT PREMIUM⚠️</b>
+<code>────────────────────</code>
+<code>Owner   : </code><code>$NAMES</code>
+<code>Ip vps  : </code><code>$MYIP</code>
+<code>Domain  : </code><code>$domain</code>
+<code>Date    : </code><code>$TIMES</code>
+<code>Ram     : </code><code>$RAMMS MB</code>
+<code>System  : </code><code>$OSL</code>
+<code>Country : </code><code>$CITY</code>
+<code>Isp     : </code><code>$ISP</code>
+<code>Exp Sc  : </code><code>$EXPSC</code>
+<code>────────────────────</code>
+<i>Automatic Notification from</i>
+<i>✌gps𝓣𝓾𝓷𝓷𝓮𝓵✌™ </i>"
 
 curl -s -X POST "https://api.telegram.org/bot$BOT_TOKEN/sendMessage" \
      -d chat_id=$CHAT_ID \
