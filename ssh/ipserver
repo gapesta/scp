@@ -24,6 +24,12 @@ iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10006 -j ACCEPT
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10007 -j ACCEPT
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10008 -j ACCEPT
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 10011 -j ACCEPT
+#8080 adalah port reverse dari squid dan 3128 adalah port ori 
+iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
+iptables -A INPUT -p tcp --dport 3128 -j ACCEPT
+#ini adalah port noobzvpn 3380 san 3443
+iptables -A INPUT -p tcp --dport 3380 -j ACCEPT
+iptables -A INPUT -p tcp --dport 3443 -j ACCEPT
 #iptables -I INPUT -m state --state NEW -m udp -p udp --dport 80 -j ACCEPT
 #iptables -I INPUT -m state --state NEW -m udp -p udp --dport 88 -j ACCEPT
 #iptables -I INPUT -m state --state NEW -m udp -p udp --dport 99 -j ACCEPT
