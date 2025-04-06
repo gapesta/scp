@@ -33,6 +33,9 @@ RAMMS=$(free -m | awk 'NR==2 {print $2}')
 OS=$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')
 domain=$(cat /etc/xray/domain)
 CITY=$(curl -s ipinfo.io/city )
+
+#tokengithub private
+tokengithub='--header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw"'
 ##Logo
 function LOGO() {
    echo -e "
@@ -442,7 +445,7 @@ elif [[ $host == "2" ]]; then
    echo ""
     #install cf
     #dec cf
-    wget --header="Accept: application/vnd.github.v3.raw" ${REPO}cf.sh.enc
+    wget ${tokengithub} ${REPO}cf.sh.enc
     files="cf.sh.enc"
     if [[ ! -f "$files" ]]; then
         echo -e "${RED}File tidak ditemukan!"
@@ -454,7 +457,7 @@ elif [[ $host == "2" ]]; then
     chmod +x cf.sh && ./cf.sh
     clear
 else
-    wget --header="Accept: application/vnd.github.v3.raw" ${REPO}ceef.sh.enc
+    wget ${tokengithub} ${REPO}ceef.sh.enc
     files="ceef.sh.enc"
     if [[ ! -f "$files" ]]; then
         echo -e "${RED}File tidak ditemukan!"
@@ -476,8 +479,8 @@ clear
 print_install "SSL Pada Domain"
     rm -rf /etc/xray/xray.key
     rm -rf /etc/xray/xray.crt
-    wget --header="Accept: application/vnd.github.v3.raw" -O /etc/xray/xray.crt "${REPO}xray.crt"
-    wget --header="Accept: application/vnd.github.v3.raw" -O /etc/xray/xray.key "${REPO}xray.key"
+    wget ${tokengithub} -O /etc/xray/xray.crt "${REPO}xray.crt"
+    wget ${tokengithub} -O /etc/xray/xray.key "${REPO}xray.key"
     domain=$(cat /root/domain)
     STOPWEBSERVER=$(lsof -i:80 | cut -d' ' -f1 | awk 'NR==2 {print $1}')
     rm -rf /root/.acme.sh
@@ -580,10 +583,10 @@ latest_version="$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases |
 bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version $latest_version
  
     # // Ambil Config Server
-    wget --header="Accept: application/vnd.github.v3.raw" -O /etc/xray/config.json "${REPO}xray/config.json" >/dev/null 2>&1
+    wget ${tokengithub} -O /etc/xray/config.json "${REPO}xray/config.json" >/dev/null 2>&1
     chmod 766 "/etc/xray/config.json"
     #wget -O /usr/local/bin/xray "${REPO}xray/xray.linux.64bit" >/dev/null 2>&1
-    wget --header="Accept: application/vnd.github.v3.raw" -O /etc/systemd/system/runn.service "${REPO}xray/runn.service" >/dev/null 2>&1
+    wget ${tokengithub} -O /etc/systemd/system/runn.service "${REPO}xray/runn.service" >/dev/null 2>&1
     #chmod +x /usr/local/bin/xray
     domain=$(cat /etc/xray/domain)
     IPVS=$(cat /etc/xray/ipvps)
@@ -596,12 +599,12 @@ bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release
     print_install "Konfigurasi Packet"
     #wget -O /etc/haproxy/haproxy.cfg "${REPO}xray/haproxy.cfg" >/dev/null 2>&1
     #wget -O /etc/nginx/conf.d/xray.conf "${REPO}xray/xray.conf" >/dev/null 2>&1
-    wget --header="Accept: application/vnd.github.v3.raw" -O /etc/haproxy/haproxy.cfg "${REPO}xray/haproxy.cfg" >/dev/null 2>&1
-    wget --header="Accept: application/vnd.github.v3.raw" -O /etc/nginx/conf.d/xray.conf "${REPO}xray/xray.conf" >/dev/null 2>&1
+    wget ${tokengithub} -O /etc/haproxy/haproxy.cfg "${REPO}xray/haproxy.cfg" >/dev/null 2>&1
+    wget ${tokengithub} -O /etc/nginx/conf.d/xray.conf "${REPO}xray/xray.conf" >/dev/null 2>&1
     sed -i "s/xxx/${domain}/g" /etc/haproxy/haproxy.cfg
     sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf
     #curl curl ${REPO}ssh/nginx.conf > /etc/nginx/nginx.conf
-    wget --header="Accept: application/vnd.github.v3.raw" -O /etc/nginx/nginx.conf "${REPO}ssh/nginx.conf" >/dev/null 2>&1
+    wget ${tokengithub} -O /etc/nginx/nginx.conf "${REPO}ssh/nginx.conf" >/dev/null 2>&1
     
 cat /etc/xray/xray.crt /etc/xray/xray.key | tee /etc/haproxy/hap.pem
 
@@ -643,7 +646,7 @@ function install_noobzvpn() {
     #rm noobzvpns.zip
     crt="/etc/xray/xray.crt"
     key="/etc/xray/xray.key"
-    git clone https://github.com/noobz-id/noobzvpns.git && rm -f noobzvpns/config.toml && sed -i "s/\$RESOURCES/cert.pem/$crt/g" noobzvpns/install.sh && sed -i "s/\$RESOURCES/key.pem/$key/g" noobzvpns/install.sh && wget --header="Accept: application/vnd.github.v3.raw" -O noobzvpns/config.toml ${REPO}ssh/config.toml && noobzvpns/install.sh
+    git clone https://github.com/noobz-id/noobzvpns.git && rm -f noobzvpns/config.toml && sed -i "s/\$RESOURCES/cert.pem/$crt/g" noobzvpns/install.sh && sed -i "s/\$RESOURCES/key.pem/$key/g" noobzvpns/install.sh && wget ${tokengithub} -O noobzvpns/config.toml ${REPO}ssh/config.toml && noobzvpns/install.sh
     touch /etc/noobzvpns/.user_account.db && chmod 666 /etc/noobzvpns/.user_account.db
     systemctl daemon-reload
     systemctl restart noobzvpns
@@ -1341,7 +1344,7 @@ print_success "L2TP DAN PPTP"
 function squid(){
     apt install squid -y
     rm -rf /squid/squid.conf
-    wget --header="Accept: application/vnd.github.v3.raw" -O /etc/squid/squid.conf "${REPO}ssh/squid.conf"
+    wget ${tokengithub} -O /etc/squid/squid.conf "${REPO}ssh/squid.conf"
     cache_log /var/log/squid/cache.log
     cache_store_log /var/log/squid/store.log
     systemctl start squid
@@ -1352,7 +1355,7 @@ function squid(){
 function ssh(){
 clear
 print_install "Password SSH"
-    wget --header="Accept: application/vnd.github.v3.raw" -O /etc/pam.d/common-password "${REPO}ssh/password"
+    wget ${tokengithub} -O /etc/pam.d/common-password "${REPO}ssh/password"
 chmod +x /etc/pam.d/common-password
 
     DEBIAN_FRONTEND=noninteractive dpkg-reconfigure keyboard-configuration
@@ -1425,7 +1428,7 @@ print_success "Password SSH"
 function udp_mini(){
 clear
 print_install "Service Limit Quota"
-wget --header="Accept: application/vnd.github.v3.raw" -q -O /usr/local/sbin/quota "${REPO}limit/quota"
+wget ${tokengithub} -q -O /usr/local/sbin/quota "${REPO}limit/quota"
 chmod +x /usr/local/sbin/quota
 cd /usr/local/sbin/
 sed -i 's/\r//' quota
@@ -1485,13 +1488,13 @@ systemctl restart qmtr
 systemctl enable qmtr
 # // Installing UDP Mini
 mkdir -p /usr/local/bin
-wget --header="Accept: application/vnd.github.v3.raw" -q -O /usr/local/bin/udp-mini "${REPO}badvpn/udp-mini"
+wget ${tokengithub} -q -O /usr/local/bin/udp-mini "${REPO}badvpn/udp-mini"
 chmod +x /usr/local/bin/udp-mini
-wget --header="Accept: application/vnd.github.v3.raw" -q -O /etc/systemd/system/udp-mini-1.service "${REPO}badvpn/udp-mini-1.service"
-wget --header="Accept: application/vnd.github.v3.raw" -q -O /etc/systemd/system/udp-mini-2.service "${REPO}badvpn/udp-mini-2.service"
-wget --header="Accept: application/vnd.github.v3.raw" -q -O /etc/systemd/system/udp-mini-3.service "${REPO}badvpn/udp-mini-3.service"
-wget --header="Accept: application/vnd.github.v3.raw" -q -O /etc/systemd/system/udp-mini-4.service "${REPO}badvpn/udp-mini-4.service"
-wget --header="Accept: application/vnd.github.v3.raw" -q -O /etc/systemd/system/udp-mini-5.service "${REPO}badvpn/udp-mini-5.service"
+wget ${tokengithub} -q -O /etc/systemd/system/udp-mini-1.service "${REPO}badvpn/udp-mini-1.service"
+wget ${tokengithub} -q -O /etc/systemd/system/udp-mini-2.service "${REPO}badvpn/udp-mini-2.service"
+wget ${tokengithub} -q -O /etc/systemd/system/udp-mini-3.service "${REPO}badvpn/udp-mini-3.service"
+wget ${tokengithub} -q -O /etc/systemd/system/udp-mini-4.service "${REPO}badvpn/udp-mini-4.service"
+wget ${tokengithub} -q -O /etc/systemd/system/udp-mini-5.service "${REPO}badvpn/udp-mini-5.service"
 systemctl daemon-reload
 sleep 1
 systemctl disable udp-mini-1
@@ -1540,7 +1543,7 @@ function ssh_slow(){
     clear
    # // Installing UDP Mini
     print_install "Modul SlowDNS Server"
-    wget --header="Accept: application/vnd.github.v3.raw" -q -O /tmp/nameserver.enc "${REPO}slowdns/nameserver.enc" >/dev/null 2>&1
+    wget ${tokengithub} -q -O /tmp/nameserver.enc "${REPO}slowdns/nameserver.enc" >/dev/null 2>&1
     file_name_server="/tmp/nameserver.enc"
     #if [[ ! -f "$ffile_name_server" ]]; then
     #    echo -e "${RED}File tidak ditemukan!"
@@ -1563,7 +1566,7 @@ clear
 function ins_SSHD(){
 clear
 print_install "SSHD"
-wget --header="Accept: application/vnd.github.v3.raw" -q -O /etc/ssh/sshd_config "${REPO}ws/sshd" >/dev/null 2>&1
+wget ${tokengithub} -q -O /etc/ssh/sshd_config "${REPO}ws/sshd" >/dev/null 2>&1
 chmod 700 /etc/ssh/sshd_config
 /etc/init.d/ssh restart
 systemctl restart ssh
@@ -1577,7 +1580,7 @@ clear
 print_install "Menginstall Dropbear"
 # // Installing Dropbear
 apt-get install dropbear -y > /dev/null 2>&1
-wget --header="Accept: application/vnd.github.v3.raw" -q -O /etc/default/dropbear "${REPO}ssh/dropbear.conf"
+wget ${tokengithub} -q -O /etc/default/dropbear "${REPO}ssh/dropbear.conf"
 chmod +x /etc/default/dropbear
 /etc/init.d/dropbear restart
 /etc/init.d/dropbear status
@@ -1612,7 +1615,7 @@ function ins_openvpn(){
 clear
 print_install "Menginstall OpenVPN"
 #OpenVPN
-wget --header="Accept: application/vnd.github.v3.raw" ${REPO}ssh/openvpn &&  chmod +x openvpn && ./openvpn
+wget ${tokengithub} ${REPO}ssh/openvpn &&  chmod +x openvpn && ./openvpn
 /etc/init.d/openvpn restart
 print_success "OpenVPN"
 }
@@ -1623,7 +1626,7 @@ print_install "Backup Server"
 #BackupOption
 apt install rclone -y
 printf "q\n" | rclone config
-wget --header="Accept: application/vnd.github.v3.raw" -O /root/.config/rclone/rclone.conf "${REPO}backup/rclone.conf"
+wget ${tokengithub} -O /root/.config/rclone/rclone.conf "${REPO}backup/rclone.conf"
 #Install Wondershaper
 cd /bin
 git clone  https://github.com/magnific0/wondershaper.git
@@ -1649,7 +1652,7 @@ password xahl djhi smch zlvc
 logfile ~/.msmtp.log
 EOF
 chown -R www-data:www-data /etc/msmtprc
-wget --header="Accept: application/vnd.github.v3.raw" -q -O /etc/ipserver "${REPO}ssh/ipserver" && bash /etc/ipserver
+wget ${tokengithub} -q -O /etc/ipserver "${REPO}ssh/ipserver" && bash /etc/ipserver
 chgrp mail /etc/msmtprc
 chown 0600 /etc/msmtprc
 touch /var/log/msmtp.log
@@ -1683,7 +1686,7 @@ gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | 
     chronyc sourcestats -v
     chronyc tracking -v
     
-    wget --header="Accept: application/vnd.github.v3.raw" ${REPO}bbr.sh &&  chmod +x bbr.sh && ./bbr.sh
+    wget ${tokengithub} ${REPO}bbr.sh &&  chmod +x bbr.sh && ./bbr.sh
 print_success "Swap 1 G"
 }
 
@@ -1709,16 +1712,16 @@ echo "Banner /etc/kyt.txt" >>/etc/ssh/sshd_config
 sed -i 's@DROPBEAR_BANNER=""@DROPBEAR_BANNER="/etc/kyt.txt"@g' /etc/default/dropbear
 
 # Ganti Banner
-wget --header="Accept: application/vnd.github.v3.raw" -O /etc/kyt.txt "${REPO}ssh/issue.net"
+wget ${tokengithub} -O /etc/kyt.txt "${REPO}ssh/issue.net"
 print_success "Fail2ban"
 }
 
 function ins_epro(){
 clear
 print_install "ePro WebSocket Proxy"
-    wget --header="Accept: application/vnd.github.v3.raw" -O /usr/bin/ws "${REPO}ws/ws" >/dev/null 2>&1
-    wget --header="Accept: application/vnd.github.v3.raw" -O /usr/bin/tun.conf "${REPO}ws/tun.conf" >/dev/null 2>&1
-    wget --header="Accept: application/vnd.github.v3.raw" -O /etc/systemd/system/ws.service "${REPO}ws/ws.service" >/dev/null 2>&1
+    wget ${tokengithub} -O /usr/bin/ws "${REPO}ws/ws" >/dev/null 2>&1
+    wget ${tokengithub} -O /usr/bin/tun.conf "${REPO}ws/tun.conf" >/dev/null 2>&1
+    wget ${tokengithub} -O /etc/systemd/system/ws.service "${REPO}ws/ws.service" >/dev/null 2>&1
     chmod +x /etc/systemd/system/ws.service
     chmod +x /usr/bin/ws
     chmod 644 /usr/bin/tun.conf
@@ -1729,7 +1732,7 @@ systemctl start ws
 systemctl restart ws
 wget -q -O /usr/local/share/xray/geosite.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat" >/dev/null 2>&1
 wget -q -O /usr/local/share/xray/geoip.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat" >/dev/null 2>&1
-wget --header="Accept: application/vnd.github.v3.raw" -O /usr/sbin/ftvpn "${REPO}ws/ftvpn" >/dev/null 2>&1
+wget ${tokengithub} -O /usr/sbin/ftvpn "${REPO}ws/ftvpn" >/dev/null 2>&1
 chmod +x /usr/sbin/ftvpn
 iptables -A FORWARD -m string --string "get_peers" --algo bm -j DROP
 iptables -A FORWARD -m string --string "announce_peer" --algo bm -j DROP
@@ -1799,7 +1802,7 @@ print_success "All Packet"
 function menu(){
     clear
     print_install "Menu Packet"
-    wget --header="Accept: application/vnd.github.v3.raw" ${REPO}menu/menu.zip
+    wget ${tokengithub} ${REPO}menu/menu.zip
     unzip menu.zip
     chmod +x menu/*
     mv menu/* /usr/local/sbin
