@@ -29,17 +29,12 @@ wget -qO- -O rootvps.sh https://raw.githubusercontent.com/gapesta/scp/refs/heads
 
 __Fungsi :__
 - To Allow Root And Change Password Login on VM Google Cloud Platform, Aws, And Etc
-  
-### INSTALL SCRIPT PRIVETE
 
+### INSTALL SCRIPT PUBLIC
 
  Ubuntu 20/22 & Update Debian 10/11
  
           WEBSOCKET / SSH / SSL / XRAY / IPSEC / NOOBZVPNS
-
-<pre><code>apt --fix-missing update && apt update && apt upgrade -y && apt install -y wget screen && wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -q https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/run && chmod +x run && ./run && screen -S run ./run</code></pre>
-
-### INSTALL SCRIPT PUBLIC
 
 <pre><code>apt --fix-missing update && apt update && apt upgrade -y && apt install -y wget screen && wget -q https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/run && chmod +x run && ./run && screen -S run ./run</code></pre>
 
