@@ -118,13 +118,6 @@ else
     echo -e "${OK} IP Address ( ${green}$IP${NC} )"
 fi
 
-#save token github
-cat > ~/.netrc <<EOF
-machine raw.githubusercontent.com
-login gapesta
-password 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
-EOF
-
 # // Validate Successfull
 echo ""
 read -p "$( echo -e "Press ${GRAY}[ ${NC}${green}Enter${NC} ${GRAY}]${NC} For Starting Installation") "
@@ -390,8 +383,8 @@ function base_package() {
     systemctl restart chronyd
     systemctl enable chrony
     systemctl restart chrony
-    chronyc sourcestats -v
-    chronyc tracking -y
+    #chronyc sourcestats -v
+    #chronyc tracking -y
     apt install ntpdate -y
     ntpdate pool.ntp.org
     apt install sudo -y
@@ -643,7 +636,7 @@ function install_noobzvpn() {
     #rm noobzvpns.zip
     crt="/etc/xray/xray.crt"
     key="/etc/xray/xray.key"
-    git clone https://github.com/noobz-id/noobzvpns.git && rm -f noobzvpns/config.toml && sed -i "s/\$RESOURCES/cert.pem/$crt/g" noobzvpns/install.sh && sed -i "s/\$RESOURCES/key.pem/$key/g" noobzvpns/install.sh && wget -O noobzvpns/config.toml ${REPO}ssh/config.toml && noobzvpns/install.sh
+    git clone https://github.com/noobz-id/noobzvpns.git && rm -f noobzvpns/config.toml && rm -f noobzvpns/install.sh && wget -O noobzvpns/config.toml ${REPO}noobzvpn/config.toml && wget -O noobzvpns/install.sh ${REPO}noobzvpn/install.sh && noobzvpns/install.sh
     touch /etc/noobzvpns/.user_account.db && chmod 666 /etc/noobzvpns/.user_account.db
     systemctl daemon-reload
     systemctl restart noobzvpns
@@ -656,6 +649,7 @@ function install_noobzvpn() {
 }
 
 #memasag l2tp dan pptp
+
 function l2tp_pptp(){
 clear
 print_install "L2TP DAN PPTP"
