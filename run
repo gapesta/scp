@@ -394,7 +394,7 @@ function base_package() {
     systemctl enable chrony
     systemctl restart chrony
     chronyc sourcestats -v
-    chronyc tracking -y
+    #chronyc tracking -y
     apt install ntpdate -y
     ntpdate pool.ntp.org
     apt install sudo -y
@@ -480,8 +480,8 @@ clear
 print_install "SSL Pada Domain"
     rm -rf /etc/xray/xray.key
     rm -rf /etc/xray/xray.crt
-    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/xray/xray.crt "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.crt"
-    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/xray/xray.key "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.key"
+    #wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/xray/xray.crt "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.crt"
+    #wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/xray/xray.key "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.key"
     domain=$(cat /root/domain)
     STOPWEBSERVER=$(lsof -i:80 | cut -d' ' -f1 | awk 'NR==2 {print $1}')
     rm -rf /root/.acme.sh
@@ -584,10 +584,10 @@ latest_version="$(curl -s https://api.github.com/repos/XTLS/Xray-core/releases |
 bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release.sh)" @ install -u www-data --version $latest_version
  
     # // Ambil Config Server
-    wget ${tokengithub} -O /etc/xray/config.json "${REPO}xray/config.json" >/dev/null 2>&1
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/xray/config.json "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray/config.json" >/dev/null 2>&1
     chmod 766 "/etc/xray/config.json"
     #wget -O /usr/local/bin/xray "${REPO}xray/xray.linux.64bit" >/dev/null 2>&1
-    wget ${tokengithub} -O /etc/systemd/system/runn.service "${REPO}xray/runn.service" >/dev/null 2>&1
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/systemd/system/runn.service "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray/runn.service" >/dev/null 2>&1
     #chmod +x /usr/local/bin/xray
     domain=$(cat /etc/xray/domain)
     IPVS=$(cat /etc/xray/ipvps)
@@ -600,12 +600,12 @@ bash -c "$(curl -L https://github.com/XTLS/Xray-install/raw/main/install-release
     print_install "Konfigurasi Packet"
     #wget -O /etc/haproxy/haproxy.cfg "${REPO}xray/haproxy.cfg" >/dev/null 2>&1
     #wget -O /etc/nginx/conf.d/xray.conf "${REPO}xray/xray.conf" >/dev/null 2>&1
-    wget ${tokengithub} -O /etc/haproxy/haproxy.cfg "${REPO}xray/haproxy.cfg" >/dev/null 2>&1
-    wget ${tokengithub} -O /etc/nginx/conf.d/xray.conf "${REPO}xray/xray.conf" >/dev/null 2>&1
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/haproxy/haproxy.cfg "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray/haproxy.cfg" >/dev/null 2>&1
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/nginx/conf.d/xray.conf "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray/xray.conf" >/dev/null 2>&1
     sed -i "s/xxx/${domain}/g" /etc/haproxy/haproxy.cfg
     sed -i "s/xxx/${domain}/g" /etc/nginx/conf.d/xray.conf
     #curl curl ${REPO}ssh/nginx.conf > /etc/nginx/nginx.conf
-    wget ${tokengithub} -O /etc/nginx/nginx.conf "${REPO}ssh/nginx.conf" >/dev/null 2>&1
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/nginx/nginx.conf "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ssh/nginx.conf" >/dev/null 2>&1
     
 cat /etc/xray/xray.crt /etc/xray/xray.key | tee /etc/haproxy/hap.pem
 
@@ -1345,7 +1345,7 @@ print_success "L2TP DAN PPTP"
 function squid(){
     apt install squid -y
     rm -rf /squid/squid.conf
-    wget ${tokengithub} -O /etc/squid/squid.conf "${REPO}ssh/squid.conf"
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/squid/squid.conf "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ssh/squid.conf"
     cache_log /var/log/squid/cache.log
     cache_store_log /var/log/squid/store.log
     systemctl start squid
@@ -1356,7 +1356,7 @@ function squid(){
 function ssh(){
 clear
 print_install "Password SSH"
-    wget ${tokengithub} -O /etc/pam.d/common-password "${REPO}ssh/password"
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/pam.d/common-password "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ssh/password"
 chmod +x /etc/pam.d/common-password
 
     DEBIAN_FRONTEND=noninteractive dpkg-reconfigure keyboard-configuration
@@ -1429,7 +1429,7 @@ print_success "Password SSH"
 function udp_mini(){
 clear
 print_install "Service Limit Quota"
-wget ${tokengithub} -q -O /usr/local/sbin/quota "${REPO}limit/quota"
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -q -O /usr/local/sbin/quota "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/limit/quota"
 chmod +x /usr/local/sbin/quota
 cd /usr/local/sbin/
 sed -i 's/\r//' quota
@@ -1489,13 +1489,13 @@ systemctl restart qmtr
 systemctl enable qmtr
 # // Installing UDP Mini
 mkdir -p /usr/local/bin
-wget ${tokengithub} -q -O /usr/local/bin/udp-mini "${REPO}badvpn/udp-mini"
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -q -O /usr/local/bin/udp-mini "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/badvpn/udp-mini"
 chmod +x /usr/local/bin/udp-mini
-wget ${tokengithub} -q -O /etc/systemd/system/udp-mini-1.service "${REPO}badvpn/udp-mini-1.service"
-wget ${tokengithub} -q -O /etc/systemd/system/udp-mini-2.service "${REPO}badvpn/udp-mini-2.service"
-wget ${tokengithub} -q -O /etc/systemd/system/udp-mini-3.service "${REPO}badvpn/udp-mini-3.service"
-wget ${tokengithub} -q -O /etc/systemd/system/udp-mini-4.service "${REPO}badvpn/udp-mini-4.service"
-wget ${tokengithub} -q -O /etc/systemd/system/udp-mini-5.service "${REPO}badvpn/udp-mini-5.service"
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -q -O /etc/systemd/system/udp-mini-1.service "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/badvpn/udp-mini-1.service"
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -q -O /etc/systemd/system/udp-mini-2.service "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/badvpn/udp-mini-2.service"
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -q -O /etc/systemd/system/udp-mini-3.service "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/badvpn/udp-mini-3.service"
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -q -O /etc/systemd/system/udp-mini-4.service "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/badvpn/udp-mini-4.service"
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -q -O /etc/systemd/system/udp-mini-5.service "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/badvpn/udp-mini-5.service"
 systemctl daemon-reload
 sleep 1
 systemctl disable udp-mini-1
@@ -1544,7 +1544,7 @@ function ssh_slow(){
     clear
    # // Installing UDP Mini
     print_install "Modul SlowDNS Server"
-    wget ${tokengithub} -q -O /tmp/nameserver.enc "${REPO}slowdns/nameserver.enc" >/dev/null 2>&1
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -q -O /tmp/nameserver.enc "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/slowdns/nameserver.enc" >/dev/null 2>&1
     file_name_server="/tmp/nameserver.enc"
     #if [[ ! -f "$ffile_name_server" ]]; then
     #    echo -e "${RED}File tidak ditemukan!"
@@ -1567,7 +1567,7 @@ clear
 function ins_SSHD(){
 clear
 print_install "SSHD"
-wget ${tokengithub} -q -O /etc/ssh/sshd_config "${REPO}ws/sshd" >/dev/null 2>&1
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -q -O /etc/ssh/sshd_config "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ws/sshd" >/dev/null 2>&1
 chmod 700 /etc/ssh/sshd_config
 /etc/init.d/ssh restart
 systemctl restart ssh
@@ -1581,7 +1581,7 @@ clear
 print_install "Menginstall Dropbear"
 # // Installing Dropbear
 apt-get install dropbear -y > /dev/null 2>&1
-wget ${tokengithub} -q -O /etc/default/dropbear "${REPO}ssh/dropbear.conf"
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -q -O /etc/default/dropbear "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ssh/dropbear.conf"
 chmod +x /etc/default/dropbear
 /etc/init.d/dropbear restart
 /etc/init.d/dropbear status
@@ -1616,7 +1616,7 @@ function ins_openvpn(){
 clear
 print_install "Menginstall OpenVPN"
 #OpenVPN
-wget ${tokengithub} ${REPO}ssh/openvpn && sleep 1 && chmod +x openvpn && ./openvpn
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ssh/openvpn && chmod +x openvpn && ./openvpn
 /etc/init.d/openvpn restart
 print_success "OpenVPN"
 }
@@ -1627,7 +1627,7 @@ print_install "Backup Server"
 #BackupOption
 apt install rclone -y
 printf "q\n" | rclone config
-wget ${tokengithub} -O /root/.config/rclone/rclone.conf "${REPO}backup/rclone.conf"
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /root/.config/rclone/rclone.conf "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/backup/rclone.conf"
 #Install Wondershaper
 cd /bin
 git clone  https://github.com/magnific0/wondershaper.git
@@ -1653,7 +1653,7 @@ password xahl djhi smch zlvc
 logfile ~/.msmtp.log
 EOF
 chown -R www-data:www-data /etc/msmtprc
-wget ${tokengithub} -q -O /etc/ipserver "${REPO}ssh/ipserver" && bash /etc/ipserver
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -q -O /etc/ipserver "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ssh/ipserver" && bash /etc/ipserver
 chgrp mail /etc/msmtprc
 chown 0600 /etc/msmtprc
 touch /var/log/msmtp.log
@@ -1687,7 +1687,7 @@ gotop_latest="$(curl -s https://api.github.com/repos/xxxserxxx/gotop/releases | 
     chronyc sourcestats -v
     chronyc tracking -v
     
-    wget ${tokengithub} ${REPO}bbr.sh && sleep 1 &&  chmod +x bbr.sh && ./bbr.sh
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/bbr.sh && sleep 1 &&  chmod +x bbr.sh && ./bbr.sh
 print_success "Swap 1 G"
 }
 
@@ -1713,16 +1713,16 @@ echo "Banner /etc/kyt.txt" >>/etc/ssh/sshd_config
 sed -i 's@DROPBEAR_BANNER=""@DROPBEAR_BANNER="/etc/kyt.txt"@g' /etc/default/dropbear
 
 # Ganti Banner
-wget ${tokengithub} -O /etc/kyt.txt "${REPO}ssh/issue.net"
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/kyt.txt "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ssh/issue.net"
 print_success "Fail2ban"
 }
 
 function ins_epro(){
 clear
 print_install "ePro WebSocket Proxy"
-    wget ${tokengithub} -O /usr/bin/ws "${REPO}ws/ws" >/dev/null 2>&1
-    wget ${tokengithub} -O /usr/bin/tun.conf "${REPO}ws/tun.conf" >/dev/null 2>&1
-    wget ${tokengithub} -O /etc/systemd/system/ws.service "${REPO}ws/ws.service" >/dev/null 2>&1
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /usr/bin/ws "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ws/ws" >/dev/null 2>&1
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /usr/bin/tun.conf "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ws/tun.conf" >/dev/null 2>&1
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/systemd/system/ws.service "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ws/ws.service" >/dev/null 2>&1
     chmod +x /etc/systemd/system/ws.service
     chmod +x /usr/bin/ws
     chmod 644 /usr/bin/tun.conf
@@ -1733,7 +1733,7 @@ systemctl start ws
 systemctl restart ws
 wget -q -O /usr/local/share/xray/geosite.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat" >/dev/null 2>&1
 wget -q -O /usr/local/share/xray/geoip.dat "https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat" >/dev/null 2>&1
-wget ${tokengithub} -O /usr/sbin/ftvpn "${REPO}ws/ftvpn" >/dev/null 2>&1
+wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /usr/sbin/ftvpn "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ws/ftvpn" >/dev/null 2>&1
 chmod +x /usr/sbin/ftvpn
 iptables -A FORWARD -m string --string "get_peers" --algo bm -j DROP
 iptables -A FORWARD -m string --string "announce_peer" --algo bm -j DROP
