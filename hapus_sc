@@ -1,0 +1,49 @@
+#!/bin/bash
+set -e
+
+echo "[*] Membuat daftar aplikasi manual yang akan dihapus..."
+sudo apt-mark showmanual \
+| grep -v -E "^ubuntu|^linux|^grub|^systemd|^bash|^coreutils|^netplan|^cloud-init|^gnupg|^network|^init|^dpkg|^apt" > manual-packages.txt
+
+echo "[*] Menghapus paket-paket non-default..."
+sudo xargs apt-get purge -y < manual-packages.txt || true
+sudo apt-get autoremove --purge -y
+sudo apt-get autoclean
+
+echo "[*] Reset konfigurasi user ke default..."
+cd ~
+rm -rf .bashrc .profile .config .local .cache .gnupg .ssh .zshrc
+cp /etc/skel/.bashrc ~/
+cp /etc/skel/.profile ~/
+
+echo "[*] Reset hostname dan hosts..."
+echo "ubuntu" | sudo tee /etc/hostname
+sudo sed -i 's/127.0.1.1 .*/127.0.1.1 ubuntu/' /etc/hosts
+
+echo "[*] Reset konfigurasi jaringan (netplan)..."
+sudo rm -rf /etc/netplan/*
+sudo tee /etc/netplan/01-netcfg.yaml > /dev/null <<EOF
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      dhcp4: true
+EOF
+
+sudo netplan apply
+sudo rm -rf /etc/noobzvpns/*
+sudo rm -rf /usr/local/sbin/*
+sudo rm -rf /etc/xray/*
+
+echo "[*] (Opsional) Install kembali paket default ubuntu-server..."
+read -p "Apakah kamu ingin install ulang paket ubuntu-server? (y/n): " jawab
+if [[ "$jawab" == "y" || "$jawab" == "Y" ]]; then
+    #sudo apt install ubuntu-desktop^ -y
+    sudo apt install ubuntu-standard^ -y
+
+fi
+
+echo "[*] Selesai. Sistem akan reboot dalam 5 detik..."
+sleep 5
+sudo reboot
