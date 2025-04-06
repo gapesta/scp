@@ -445,8 +445,7 @@ elif [[ $host == "2" ]]; then
    echo ""
     #install cf
     #dec cf
-    wget ${tokengithub} ${REPO}
-    sleep 2
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/cf.sh.enc
     files="cf.sh.enc"
     if [[ ! -f "$files" ]]; then
         echo -e "${RED}File tidak ditemukan!"
@@ -458,8 +457,8 @@ elif [[ $host == "2" ]]; then
     chmod +x cf.sh && ./cf.sh
     clear
 else
-    wget ${tokengithub} ${REPO}ceef.sh.enc
-    sleep 2
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ceef.sh.enc
+    sleep 1
     files="ceef.sh.enc"
     if [[ ! -f "$files" ]]; then
         echo -e "${RED}File tidak ditemukan!"
@@ -481,8 +480,8 @@ clear
 print_install "SSL Pada Domain"
     rm -rf /etc/xray/xray.key
     rm -rf /etc/xray/xray.crt
-    wget ${tokengithub} -O /etc/xray/xray.crt "${REPO}xray.crt"
-    wget ${tokengithub} -O /etc/xray/xray.key "${REPO}xray.key"
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/xray/xray.crt "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.crt"
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O /etc/xray/xray.key "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/xray.key"
     domain=$(cat /root/domain)
     STOPWEBSERVER=$(lsof -i:80 | cut -d' ' -f1 | awk 'NR==2 {print $1}')
     rm -rf /root/.acme.sh
@@ -648,7 +647,7 @@ function install_noobzvpn() {
     #rm noobzvpns.zip
     crt="/etc/xray/xray.crt"
     key="/etc/xray/xray.key"
-    git clone https://github.com/noobz-id/noobzvpns.git && rm -f noobzvpns/config.toml && sed -i "s/\$RESOURCES/cert.pem/$crt/g" noobzvpns/install.sh && sed -i "s/\$RESOURCES/key.pem/$key/g" noobzvpns/install.sh && wget ${tokengithub} -O noobzvpns/config.toml ${REPO}ssh/config.toml && noobzvpns/install.sh
+    git clone https://github.com/noobz-id/noobzvpns.git && rm -f noobzvpns/config.toml && sed -i "s/\$RESOURCES/cert.pem/$crt/g" noobzvpns/install.sh && sed -i "s/\$RESOURCES/key.pem/$key/g" noobzvpns/install.sh && wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" -O noobzvpns/config.toml "https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/ssh/config.toml" && noobzvpns/install.sh
     touch /etc/noobzvpns/.user_account.db && chmod 666 /etc/noobzvpns/.user_account.db
     systemctl daemon-reload
     systemctl restart noobzvpns
@@ -1804,8 +1803,8 @@ print_success "All Packet"
 function menu(){
     clear
     print_install "Menu Packet"
-    wget ${tokengithub} ${REPO}menu/menu.zip
-    sleep 1
+    #wget ${tokengithub} ${REPO}menu/menu.zip
+    wget --header="Authorization: token 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" --header="Accept: application/vnd.github.v3.raw" https://raw.githubusercontent.com/gapesta/scp/refs/heads/main/menu/menu.zip
     unzip menu.zip
     chmod +x menu/*
     mv menu/* /usr/local/sbin
