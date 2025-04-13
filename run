@@ -1565,7 +1565,6 @@ function monitor_disk(){
     (crontab -l 2>/dev/null; echo "*/30 * 2 * * /usr/local/monitoring_disk/monitor-disk-alert.sh >> /var/log/monitor-disk-alert.log 2>&1") | crontab -
     service cron restart
     print_success "Monitor Disk"
-fi
 }
 
 function ssh_slow(){
@@ -1950,11 +1949,11 @@ clear
     l2tp_pptp
     ssh
     udp_mini
-    #ssh_slow
+    ssh_slow
     ins_SSHD
     ins_dropbear
     ins_vnstat
-    #ins_openvpn
+    ins_openvpn
     #squid
     monitor_disk
     ins_backup
