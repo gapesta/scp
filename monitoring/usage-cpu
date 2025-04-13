@@ -1,0 +1,3 @@
+#!/bin/bash
+cpu_usage=$(top -bn1 | grep "Cpu(s)" | awk '{print 100 - $8}')
+printf "CPU Usage: \e[1;32m%.1f%%\e[0m\n" "$cpu_usage"

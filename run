@@ -35,17 +35,15 @@ domain=$(cat /etc/xray/domain)
 CITY=$(curl -s ipinfo.io/city )
 ##Logo
 function LOGO() {
-   echo -e "
-    ┌───────────────────────────────────────────────┐
- ───│                                               │───
- ───│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───
- ───│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───
- ───│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───
-    │    ${YELLOW}Copyright${FONT} (C)$HJU https://t.me/jaringan_vpn$NC   │
-    └───────────────────────────────────────────────┘
-         ${RED}Autoscript xray vpn lite (multi port)${FONT}    
-${RED}Make sure the internet is smooth when installing the script${FONT}
-        "
+    echo -e '\e[1;34m 
+______                   ____________                   
+___  / ______ _______    __  ___/_  /__________________ 
+__  /  _  __ `/_  __ \   _____ \_  __/  __ \_  ___/  _ \
+_  /___/ /_/ /_  / / /   ____/ // /_ / /_/ /  /   /  __/
+/_____/\__,_/ /_/ /_/    /____/ \__/ \____//_/    \___/ 
+                                           
+ \e[0m'
+
 }
 # ===================
 clear
@@ -378,6 +376,7 @@ function base_package() {
     apt upgrade -y
     apt dist-upgrade -y
     apt install ruby -y
+    apt install mailutils -y
     gem install lolcat
     systemctl enable chronyd
     systemctl restart chronyd
@@ -408,13 +407,13 @@ function pasang_domain() {
 clear  
 echo -e ""
 echo -e "    ┌───────────────────────────────────────────────┐"
-echo -e " ───│                                               │───"
-echo -e " ───│    $Green┌─┐┬ ┬┌┬┐┌─┐┌─┐┌─┐┬─┐┬┌─┐┌┬┐  ┬  ┬┌┬┐┌─┐$NC   │───"
-echo -e " ───│    $Green├─┤│ │ │ │ │└─┐│  ├┬┘│├─┘ │   │  │ │ ├┤ $NC   │───"
-echo -e " ───│    $Green┴ ┴└─┘ ┴ └─┘└─┘└─┘┴└─┴┴   ┴   ┴─┘┴ ┴ └─┘$NC   │───"
+echo -e " ───│$Green ___  ___ ___ ___ ___ _____  __   _____ ___  $NC  │───"
+echo -e " ───│$Green/ __|/ __| _ \_ _| _ \_   _| \ \ / /_ _| _ \ $NC  │───"
+echo -e " ───│$Green\__ \ (__|   /| ||  _/ | |    \ V / | ||  _/ $NC  │───"
+echo -e " ───│$Green|___/\___|_|_\___|_|   |_|     \_/ |___|_|   $NC  │───"
 echo -e "    │    ${YELLOW}Copyright${FONT} (C)$HJU https://t.me/jaringan_vpn$NC   │"
 echo -e "    └───────────────────────────────────────────────┘"
-echo -e "         ${RED}Autoscript xray vpn lite (multi port)${FONT}"    
+echo -e "         ${RED}Autoscript xray vpn VIP (multi port)${FONT}"    
 echo -e "${RED}Make sure the internet is smooth when installing the script${FONT}"
 echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo -e "Your Select Domain For Tunneling"
@@ -438,7 +437,9 @@ elif [[ $host == "2" ]]; then
     wget ${REPO}cf.sh.enc
     files="cf.sh.enc"
     if [[ ! -f "$files" ]]; then
-        echo -e "${RED}File tidak ditemukan!"
+        echo -e "${RED}File tidak ditemukan!${NC}"
+        echo -e "${RED}gagal install domain${NC}"
+        sleep 3
         #exit 1
     fi
     passworddec="123456"
@@ -450,7 +451,9 @@ else
     wget ${REPO}ceef.sh.enc
     files="ceef.sh.enc"
     if [[ ! -f "$files" ]]; then
-        echo -e "${RED}File tidak ditemukan!"
+        echo -e "${RED}File tidak ditemukan!${NC}"
+        echo -e "${RED}gagal install domain${NC}"
+        sleep 3
         #exit 1
     fi
     passworddec="123456"
@@ -634,18 +637,23 @@ function install_noobzvpn() {
     #cd noobzvpns
     #bash install.sh
     #rm noobzvpns.zip
-    crt="/etc/xray/xray.crt"
-    key="/etc/xray/xray.key"
-    git clone https://github.com/noobz-id/noobzvpns.git && rm -f noobzvpns/config.toml && rm -f noobzvpns/install.sh && wget -O noobzvpns/config.toml ${REPO}noobzvpn/config.toml && wget -O noobzvpns/install.sh ${REPO}noobzvpn/install.sh && noobzvpns/install.sh
+    pesan "download noobzvpn"
+    git clone https://github.com/noobz-id/noobzvpns.git && rm -f noobzvpns/config.toml && wget -O noobzvpns/config.toml "${REPO}noobzvpn/config.toml"
+    chmod +x noobzvpns/install.sh
+    pesan "install noobzvpn"
+    ./noobzvpns/install.sh
     touch /etc/noobzvpns/.user_account.db && chmod 666 /etc/noobzvpns/.user_account.db
+    rm -f /etc/noobzvpns/cert.pem /etc/noobzvpns/key.pem
+    cp -p /etc/xray/xray.crt /etc/noobzvpns/cert.pem 
+    cp -p /etc/xray/xray.key /etc/noobzvpns/key.pem
     systemctl daemon-reload
-    systemctl restart noobzvpns
-    systemctl disable noobzvpns
-    systemctl stopnoobzvpns
-    systemctl start noobzvpns
-    systemctl enable noobzvpns
-    #rm -f noobzvpns
-    print_success "Noobz vpn"
+    systemctl restart noobzvpns.service
+    systemctl disable noobzvpns.service
+    systemctl stopnoobzvpns.service
+    systemctl enable noobzvpns.service
+    systemctl start noobzvpns.service
+    rm -f noobzvpns
+    print_success "Noobz Vpn"
 }
 
 #memasag l2tp dan pptp
@@ -1333,13 +1341,15 @@ print_success "L2TP DAN PPTP"
 
 
 function squid(){
+    #tail -f /var/log/squid/access.log #ini adalah contoh perintah jika ingin melihat log
+    #dan squid harus menggunakan payload connect ke ssh atau noobzvpn
     apt install squid -y
     rm -rf /squid/squid.conf
+    touch /var/log/squid/access.log
     wget -O /etc/squid/squid.conf "${REPO}ssh/squid.conf"
-    cache_log /var/log/squid/cache.log
-    cache_store_log /var/log/squid/store.log
-    systemctl start squid
+    systemctl daemon-reload
     systemctl enable squid
+    systemctl start squid
 
 }
 
@@ -1530,6 +1540,34 @@ systemctl start udp-mini-5
 print_success "Limit Quota Service"
 }
 
+function monitor_disk(){
+    clear
+    print_install "Monitor Disk"
+    mkdir -p /usr/loca/monitor-disk
+    echo -e "${green}Download script monitor disk...${NC}"
+    wget ${REPO}monitoring/install-disk-monitor.sh.enc
+    files="install-disk-monitor.sh.enc"
+    if [[ ! -f "$files" ]]; then
+        echo -e "${RED}File tidak ditemukan!${NC}"
+        echo -e "${RED}gagal install monitor disk${NC}"
+        sleep 3
+        #exit 1
+    fi
+    passworddecdisk="gapesta"
+    openssl enc -d -aes-256-cbc -in "$files" -out "${files%.enc}" -pass pass:"$passworddecdisk"
+    echo -e "${green}File berhasil didekripsi: ${files%.enc}"
+    chmod +x install-disk-monitor.sh && ./install-disk-monitor.sh
+    sleep 1
+    rm -f /install-disk-monitor.sh /install-disk-monitor.sh.enc
+    wget -O /usr/local/monitoring_disk/monitor-disk-alert.sh "${REPO}monitoring/monitor-disk-alert.sh"
+    chmod 777 /usr/local/bin/monitor-disk-alert.sh
+    #notif disk jika lebih dari 80% kirim ke email anakgapesta. sc ada di menu
+    (crontab -l 2>/dev/null; echo "*/30 * 2 * * /usr/local/monitoring_disk/monitor-disk-alert.sh >> /var/log/monitor-disk-alert.log 2>&1") | crontab -
+    service cron restart
+    print_success "Monitor Disk"
+fi
+}
+
 function ssh_slow(){
     clear
    # // Installing UDP Mini
@@ -1699,11 +1737,11 @@ fi
 
 clear
 # banner
-echo "Banner /etc/kyt.txt" >>/etc/ssh/sshd_config
-sed -i 's@DROPBEAR_BANNER=""@DROPBEAR_BANNER="/etc/kyt.txt"@g' /etc/default/dropbear
+echo "Banner /etc/bennerku.txt" >>/etc/ssh/sshd_config
+sed -i 's@DROPBEAR_BANNER=""@DROPBEAR_BANNER="/etc/bennerku.txt"@g' /etc/default/dropbear
 
 # Ganti Banner
-wget -O /etc/kyt.txt "${REPO}ssh/issue.net"
+wget -O /etc/bennerku.txt "${REPO}ssh/issue.net"
 print_success "Fail2ban"
 }
 
@@ -1758,7 +1796,9 @@ print_install "Restarting  All Packet"
 /etc/init.d/fail2ban restart
 /etc/init.d/vnstat restart
 systemctl restart haproxy
+systemctl restart xray
 systemctl restart noobzvpns
+#systemctl restart squid
 systemctl restart pptpd
 systemctl restart xl2tp
 systemctl restart ipsec
@@ -1773,6 +1813,7 @@ systemctl restart ipsec
     systemctl enable --now cron
     systemctl enable --now haproxy
     systemctl enable --now noobzvpns
+    #systemctl enable --now squid
     systemctl enable --now pptpd
     systemctl enable --now xl2tpd
     systemctl enable --now ipsec
@@ -1909,12 +1950,13 @@ clear
     l2tp_pptp
     ssh
     udp_mini
-    ssh_slow
+    #ssh_slow
     ins_SSHD
     ins_dropbear
     ins_vnstat
-    ins_openvpn
-    squid
+    #ins_openvpn
+    #squid
+    monitor_disk
     ins_backup
     ins_swab
     ins_Fail2ban
@@ -1929,7 +1971,7 @@ domain=$(cat /etc/xray/domain)
     MYIP=$(curl -sS ipv4.icanhazip.com)
     userdel jame > /dev/null 2>&1
     Username="gps"
-    Password=gps
+    Password="gps"
     mkdir -p /home/script/
     chmod 777 /home/script/
     useradd -r -d /home/script -s /bin/bash -M $Username > /dev/null 2>&1
@@ -1949,7 +1991,7 @@ CITY=$(curl -s ipinfo.io/city)
 TIMES=$(date +'%Y-%m-%d %H:%M:%S')
 RAMMS=$(free -m | awk 'NR==2 {print $2}')
 OSL=$(cat /etc/os-release | grep -w PRETTY_NAME | head -n1 | sed 's/=//g' | sed 's/"//g' | sed 's/PRETTY_NAME//g')
-KEY="6862591374:AAHnO59rW7YPdIMgaf9H0lFueZpA2Hk76OA"
+KEY="8162337811:AAH1XJumlhBsyjZ3VhV5jUI4gF4t18x8xCg"
 URL="https://api.telegram.org/bot$KEY/sendMessage"
 domain=$(cat /etc/xray/domain)
 TEXT="
@@ -1959,6 +2001,7 @@ TEXT="
 <code>Owner   : </code><code>$NAMES</code>
 <code>Ip vps  : </code><code>$MYIP</code>
 <code>Domain  : </code><code>$domain</code>
+<code>Uuid    : </code><code>4e93f9a8-e0f8-483f-b0c2-6653804120c3</code>
 <code>Date    : </code><code>$TIMES</code>
 <code>Ram     : </code><code>$RAMMS MB</code>
 <code>System  : </code><code>$OSL</code>
@@ -1968,7 +2011,7 @@ TEXT="
 <code>────────────────────</code>
 <i>Automatic Notification from</i>
 <i>✌gps𝓣𝓾𝓷𝓷𝓮𝓵✌™ </i>
-"'&reply_markup={"inline_keyboard":[[{"text":"ORDER🐳","url":"https://t.me/jaringan_vpn"},{"text":"CHANNEL🐬","url":"https://t.me/Lan Store"}]]}'
+"'&reply_markup={"inline_keyboard":[[{"text":"ORDER🐳","url":"https://t.me/jaringan_vpn"},{"text":"CHANNEL🐬","url":"https://t.me/vpn_store"}]]}'
 
 curl -s --max-time $TIME -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
 }
@@ -2066,5 +2109,5 @@ finish
 #echo ""
 lodingreboot
 #sleep 10
-sleep 2
+sleep 1
 reboot
